@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Namma Metro — Live Network Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --bg: #0e1116;
+    --panel: #161b22;
+    --panel-border: #262d38;
+    --ink: #e8ecf1;
+    --muted: #8b95a5;
+    --purple: #a855f7;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --pink: #ec4899;
+    --blue: #3b82f6;
+    --accent: #ff7a45;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family: "Iowan Old Style","Georgia",serif;
+    background: var(--bg);
+    color: var(--ink);
+    display:flex;
+    overflow:hidden;
+  }
+  #map{ flex: 1 1 auto; height:100vh; background:#0b0e13; }
+
+  .leaflet-container{ background:#0b0e13; }
+
+  #sidebar{
+    width: 380px;
+    max-width: 42vw;
+    height:100vh;
+    background: var(--panel);
+    border-left: 1px solid var(--panel-border);
+    display:flex;
+    flex-direction:column;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+  #brand{
+    padding: 22px 22px 14px;
+    border-bottom:1px solid var(--panel-border);
+  }
+  #brand h1{
+    font-family:"Iowan Old Style","Georgia",serif;
+    font-size:22px;
+    margin:0 0 4px;
+    letter-spacing:0.2px;
+    font-weight:600;
+  }
+  #brand p{ margin:0; color:var(--muted); font-size:13px; line-height:1.5; }
+
+  #legend{
+    padding: 14px 22px;
+    border-bottom:1px solid var(--panel-border);
+    display:flex; flex-wrap:wrap; gap:10px 16px;
+  }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted); cursor:pointer; user-select:none; }
+  .legend-item.off{ opacity:.35; }
+  .dot{ width:10px; height:10px; border-radius:50%; display:inline-block; flex:none; }
+
+  #detail{
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding: 20px 22px 40px;
+  }
+  #detail::-webkit-scrollbar{ width:8px; }
+  #detail::-webkit-scrollbar-thumb{ background:#2a323f; border-radius:4px; }
+
+  .empty-state{
+    color:var(--muted);
+    font-size:13.5px;
+    line-height:1.7;
+    margin-top:40px;
+  }
+  .empty-state b{ color:var(--ink); }
+
+  .station-name{
+    font-family:"Iowan Old Style","Georgia",serif;
+    font-size:24px;
+    margin:0 0 10px;
+    line-height:1.2;
+  }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+  .chip{
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:20px;
+    font-weight:600;
+    color:#0b0e13;
+  }
+  .status-row{
+    display:flex; gap:8px; align-items:baseline;
+    font-size:13px; color:var(--muted); margin-bottom:18px;
+  }
+  .status-row .val{ color:var(--ink); font-weight:600; }
+
+  .section-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--muted);
+    margin: 22px 0 10px;
+    font-weight:600;
+  }
+
+  .timeline{ position:relative; padding-left:18px; border-left:2px solid var(--panel-border); }
+  .tl-item{ position:relative; padding-bottom:18px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-item::before{
+    content:""; position:absolute; left:-24px; top:3px;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--accent); border:2px solid var(--panel);
+  }
+  .tl-date{ font-size:11.5px; color:var(--accent); font-weight:700; margin-bottom:2px; }
+  .tl-text{ font-size:13px; color:var(--ink); line-height:1.5; }
+  .tl-source{ font-size:11px; color:var(--muted); margin-top:3px; }
+  .tl-source a{ color:var(--muted); }
+
+  .news-item{
+    border-bottom:1px solid var(--panel-border);
+    padding: 12px 0;
+  }
+  .news-item:last-child{ border-bottom:none; }
+  .news-item a{ color:var(--ink); text-decoration:none; font-size:13.5px; line-height:1.45; display:block; }
+  .news-item a:hover{ color: var(--accent); }
+  .news-meta{ font-size:11px; color:var(--muted); margin-top:4px; }
+
+  .no-news{ color:var(--muted); font-size:12.5px; font-style:italic; }
+
+  #search{
+    width:100%; padding:9px 12px; margin-top:12px;
+    background:#0b0e13; border:1px solid var(--panel-border);
+    color:var(--ink); border-radius:8px; font-size:13px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+  }
+  #search:focus{ outline:none; border-color:var(--accent); }
+
+  .leaflet-popup-content-wrapper{
+    background: var(--panel); color: var(--ink); border-radius:8px;
+  }
+  .leaflet-popup-tip{ background: var(--panel); }
+  .popup-title{ font-family:"Iowan Old Style","Georgia",serif; font-size:15px; font-weight:600; }
+  .popup-sub{ font-size:11px; color:var(--muted); margin-top:2px; }
+
+  @media (max-width: 760px){
+    body{ flex-direction:column; }
+    #sidebar{ width:100%; max-width:100%; height:45vh; order:2; border-left:none; border-top:1px solid var(--panel-border);}
+    #map{ height:55vh; }
+  }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="sidebar">
+  <div id="brand">
+    <h1>Namma Metro</h1>
+    <p>Live network view — Purple, Green &amp; Yellow lines running today; Pink and Blue under construction. Tap any station for its timeline and latest coverage.</p>
+    <input id="search" type="text" placeholder="Find a station…" />
+  </div>
+  <div id="legend"></div>
+  <div id="detail">
+    <div class="empty-state">
+      Tap a dot on the map — or search above — to see a station's status, opening timeline, and any BMRCL news the parser has picked up.<br><br>
+      <b>Solid line</b> = operational. <b>Dashed line</b> = under construction.
+    </div>
+  </div>
+</div>
+
+<script>
+const METRO_DATA = {
+  "generated": "2026-09-12",
+  "source_notes": "Compiled from BMRCL/Wikipedia public data (Namma Metro). Coordinates for far-future/under-construction stations are best-available approximations.",
+  "lines": {
+    "Purple": {
+      "color": "#8e44ad",
+      "status": "operational"
+    },
+    "Green": {
+      "color": "#27ae60",
+      "status": "operational"
+    },
+    "Yellow": {
+      "color": "#f1c40f",
+      "status": "operational"
+    },
+    "Pink": {
+      "color": "#ff69b4",
+      "status": "under_construction"
+    },
+    "Blue": {
+      "color": "#2980b9",
+      "status": "under_construction"
+    }
+  },
+  "stations": [
+    {
+      "id": "challaghatta",
+      "name": "Challaghatta",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.897934,
+      "lng": 77.462701,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kengeri",
+      "name": "Kengeri",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.907963,
+      "lng": 77.476466,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kengeri_bus_terminal",
+      "name": "Kengeri Bus Terminal",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.914962,
+      "lng": 77.48731,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "pattanagere",
+      "name": "Pattanagere",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.924326,
+      "lng": 77.498288,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jnanabharathi",
+      "name": "Jnanabharathi",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.935423,
+      "lng": 77.512182,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "rajarajeshwari_nagar",
+      "name": "Rajarajeshwari Nagar",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.936662,
+      "lng": 77.519593,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "pantharapalya\u2013nayandahalli",
+      "name": "Pantharapalya\u2013Nayandahalli",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2021-08-31",
+      "lat": 12.942479,
+      "lng": 77.525598,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "mysuru_road",
+      "name": "Mysuru Road",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2015-11-16",
+      "lat": 12.946507,
+      "lng": 77.52978,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "deepanjali_nagar",
+      "name": "Deepanjali Nagar",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2015-11-16",
+      "lat": 12.952187,
+      "lng": 77.536939,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "attiguppe",
+      "name": "Attiguppe",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2015-11-16",
+      "lat": 12.961954,
+      "lng": 77.533589,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "vijayanagar",
+      "name": "Vijayanagar",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2015-11-16",
+      "lat": 12.970795,
+      "lng": 77.537389,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "sri_balagangadharanatha_swamiji_stn_hosahalli",
+      "name": "Sri Balagangadharanatha Swamiji Stn., Hosahalli",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2015-11-16",
+      "lat": 12.97424,
+      "lng": 77.545541,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "magadi_road",
+      "name": "Magadi Road",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2015-11-16",
+      "lat": 12.975633,
+      "lng": 77.5555,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "krantivira_sangolli_rayanna_railway_station",
+      "name": "Krantivira Sangolli Rayanna Railway Station",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2016-04-29",
+      "lat": 12.975842,
+      "lng": 77.566017,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "nadaprabhu_kempegowda_station_majestic",
+      "name": "Nadaprabhu Kempegowda Station, Majestic",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2016-04-29",
+      "lat": 12.975697,
+      "lng": 77.572967,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "sir_m_visveshwaraya_station_central_college",
+      "name": "Sir M. Visveshwaraya Station, Central College",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2016-04-29",
+      "lat": 12.974345,
+      "lng": 77.583998,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "dr_b_r_ambedkar_station_vidhana_soudha",
+      "name": "Dr. B. R. Ambedkar Station, Vidhana Soudha",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2016-04-29",
+      "lat": 12.978793,
+      "lng": 77.591752,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "cubbon_park",
+      "name": "Cubbon Park",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2016-04-29",
+      "lat": 12.981227,
+      "lng": 77.596645,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "mahatma_gandhi_road",
+      "name": "Mahatma Gandhi Road",
+      "lines": [
+        "Purple",
+        "Pink"
+      ],
+      "status": "operational+under_construction",
+      "date": "2011-10-20",
+      "lat": 12.975505,
+      "lng": 77.606762,
+      "interchange": true,
+      "note": "",
+      "pink_date": "2027-03"
+    },
+    {
+      "id": "trinity",
+      "name": "Trinity",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2011-10-20",
+      "lat": 12.973033,
+      "lng": 77.616984,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "halasuru",
+      "name": "Halasuru",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2011-10-20",
+      "lat": 12.976431,
+      "lng": 77.626616,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "indira_nagar",
+      "name": "Indira Nagar",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2011-10-20",
+      "lat": 12.978318,
+      "lng": 77.638731,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "swami_vivekananda_road",
+      "name": "Swami Vivekananda Road",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2011-10-20",
+      "lat": 12.98595,
+      "lng": 77.64493,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "baiyappanahalli",
+      "name": "Baiyappanahalli",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2011-10-20",
+      "lat": 12.990738,
+      "lng": 77.652504,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "benniganahalli",
+      "name": "Benniganahalli",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-10-09",
+      "lat": 12.9964994,
+      "lng": 77.6683239,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "krishnarajapura",
+      "name": "Krishnarajapura",
+      "lines": [
+        "Purple",
+        "Blue"
+      ],
+      "status": "operational+under_construction",
+      "date": "2023-03-26",
+      "lat": 13.0,
+      "lng": 77.67794,
+      "interchange": true,
+      "note": "",
+      "blue_date": "2026-12"
+    },
+    {
+      "id": "singayyanapalya",
+      "name": "Singayyanapalya",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.99678,
+      "lng": 77.69217,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "garudacharpalya",
+      "name": "Garudacharpalya",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.993393,
+      "lng": 77.703896,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hoodi",
+      "name": "Hoodi",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.988396,
+      "lng": 77.710515,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "seetharamapalya",
+      "name": "Seetharamapalya",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.981041,
+      "lng": 77.708791,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kundalahalli",
+      "name": "Kundalahalli",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.977701,
+      "lng": 77.714957,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "nallurhalli",
+      "name": "Nallurhalli",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.97677,
+      "lng": 77.72394,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "sri_sathya_sai_hospital",
+      "name": "Sri Sathya Sai Hospital",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.981848,
+      "lng": 77.727703,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "pattandur_agrahara",
+      "name": "Pattandur Agrahara",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.98768,
+      "lng": 77.738169,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kadugodi_tree_park",
+      "name": "Kadugodi Tree Park",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.985824,
+      "lng": 77.74651,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hopefarm_channasandra",
+      "name": "Hopefarm Channasandra",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.9895,
+      "lng": 77.752,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "whitefield_kadugodi",
+      "name": "Whitefield (Kadugodi)",
+      "lines": [
+        "Purple"
+      ],
+      "status": "operational",
+      "date": "2023-03-26",
+      "lat": 12.993819,
+      "lng": 77.757732,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "madavara",
+      "name": "Madavara",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2024-11-07",
+      "lat": 13.057437,
+      "lng": 77.472775,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "chikkabidarakallu",
+      "name": "Chikkabidarakallu",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2024-11-07",
+      "lat": 13.054155,
+      "lng": 77.483042,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "manjunathanagara",
+      "name": "Manjunathanagara",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2024-11-07",
+      "lat": 13.05126,
+      "lng": 77.4914,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "nagasandra",
+      "name": "Nagasandra",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2015-05-01",
+      "lat": 13.048041,
+      "lng": 77.500091,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "dasarahalli",
+      "name": "Dasarahalli",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2015-05-01",
+      "lat": 13.043338,
+      "lng": 77.512407,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jalahalli",
+      "name": "Jalahalli",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2015-05-01",
+      "lat": 13.039429,
+      "lng": 77.519698,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "peenya_industry",
+      "name": "Peenya Industry",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.03628,
+      "lng": 77.52544,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "peenya",
+      "name": "Peenya",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.032815,
+      "lng": 77.533227,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "goraguntepalya",
+      "name": "Goraguntepalya",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.028383,
+      "lng": 77.540772,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "yeshwanthpur",
+      "name": "Yeshwanthpur",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.023172,
+      "lng": 77.549859,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "sandal_soap_factory",
+      "name": "Sandal Soap Factory",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.014698,
+      "lng": 77.553933,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "mahalakshmi",
+      "name": "Mahalakshmi",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.008217,
+      "lng": 77.548821,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "rajajinagar",
+      "name": "Rajajinagar",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 13.000334,
+      "lng": 77.549701,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "mahakavi_kuvempu_road",
+      "name": "Mahakavi Kuvempu Road",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 12.998523,
+      "lng": 77.556972,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "srirampura",
+      "name": "Srirampura",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 12.996461,
+      "lng": 77.563439,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "mantri_square_sampige_road",
+      "name": "Mantri Square Sampige Road",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2014-03-01",
+      "lat": 12.990502,
+      "lng": 77.57077,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "nadaprabhu_kempegowda_station_majestic",
+      "name": "Nadaprabhu Kempegowda Station, Majestic",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.975697,
+      "lng": 77.572967,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "chickpete",
+      "name": "Chickpete",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.96666,
+      "lng": 77.574678,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "krishna_rajendra_market",
+      "name": "Krishna Rajendra Market",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.961108,
+      "lng": 77.574828,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "national_college",
+      "name": "National College",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.95059,
+      "lng": 77.573669,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "lalbagh",
+      "name": "Lalbagh",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.946408,
+      "lng": 77.58002,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "southend_circle",
+      "name": "Southend Circle",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.938377,
+      "lng": 77.580096,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jayanagar",
+      "name": "Jayanagar",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.929641,
+      "lng": 77.58016,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "rashtreeya_vidyalaya_road",
+      "name": "Rashtreeya Vidyalaya Road",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.921464,
+      "lng": 77.580128,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "banashankari",
+      "name": "Banashankari",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.915649,
+      "lng": 77.573588,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jaya_prakash_nagar",
+      "name": "Jaya Prakash Nagar",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.907382,
+      "lng": 77.573213,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "yelachenahalli",
+      "name": "Yelachenahalli",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2017-06-18",
+      "lat": 12.895952,
+      "lng": 77.570193,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "konanakunte_cross",
+      "name": "Konanakunte Cross",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2021-01-15",
+      "lat": 12.888872,
+      "lng": 77.562602,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "doddakallasandra",
+      "name": "Doddakallasandra",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2021-01-15",
+      "lat": 12.884636,
+      "lng": 77.552683,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "vajarahalli",
+      "name": "Vajarahalli",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2021-01-15",
+      "lat": 12.877513,
+      "lng": 77.544739,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "thalaghattapura",
+      "name": "Thalaghattapura",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2021-01-15",
+      "lat": 12.871395,
+      "lng": 77.538398,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "silk_institute",
+      "name": "Silk Institute",
+      "lines": [
+        "Green"
+      ],
+      "status": "operational",
+      "date": "2021-01-15",
+      "lat": 12.861809,
+      "lng": 77.529868,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "rashtreeya_vidyalaya_road",
+      "name": "Rashtreeya Vidyalaya Road",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.921464,
+      "lng": 77.580128,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "ragigudda",
+      "name": "Ragigudda",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.917,
+      "lng": 77.5884,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jayadeva_hospital",
+      "name": "Jayadeva Hospital",
+      "lines": [
+        "Yellow",
+        "Pink"
+      ],
+      "status": "operational+under_construction",
+      "date": "2025-08-10",
+      "lat": 12.91675,
+      "lng": 77.599925,
+      "interchange": true,
+      "note": "",
+      "pink_date": "2026-08"
+    },
+    {
+      "id": "btm_layout",
+      "name": "BTM Layout",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.916584,
+      "lng": 77.608238,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "central_silk_board",
+      "name": "Central Silk Board",
+      "lines": [
+        "Yellow",
+        "Blue"
+      ],
+      "status": "operational+under_construction",
+      "date": "2025-08-10",
+      "lat": 12.9176234,
+      "lng": 77.6245462,
+      "interchange": true,
+      "note": "",
+      "blue_date": "2026-12"
+    },
+    {
+      "id": "bommanahalli",
+      "name": "Bommanahalli",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.911032,
+      "lng": 77.62638,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hongasandra",
+      "name": "Hongasandra",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.901631,
+      "lng": 77.632044,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kudlu_gate",
+      "name": "Kudlu Gate",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.889923,
+      "lng": 77.639233,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "singasandra",
+      "name": "Singasandra",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.88069,
+      "lng": 77.64498,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hosa_road",
+      "name": "Hosa Road",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.87054,
+      "lng": 77.65259,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "beratena_agrahara",
+      "name": "Beratena Agrahara",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.86385,
+      "lng": 77.65798,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "electronic_city",
+      "name": "Electronic City",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.84649,
+      "lng": 77.67112,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "infosys_foundation_konappana_agrahara",
+      "name": "Infosys Foundation Konappana Agrahara",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.846783,
+      "lng": 77.671114,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "huskur_road",
+      "name": "Huskur Road",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.839366,
+      "lng": 77.67724,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "biocon_hebbagodi",
+      "name": "Biocon Hebbagodi",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.828393,
+      "lng": 77.681612,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "delta_electronics_bommasandra",
+      "name": "Delta Electronics Bommasandra",
+      "lines": [
+        "Yellow"
+      ],
+      "status": "operational",
+      "date": "2025-08-10",
+      "lat": 12.820364,
+      "lng": 77.68747,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kalena_agrahara",
+      "name": "Kalena Agrahara",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2026-08",
+      "lat": 12.867493,
+      "lng": 77.592326,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hulimavu",
+      "name": "Hulimavu",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2026-08",
+      "lat": 12.882942,
+      "lng": 77.596237,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "iimb",
+      "name": "IIMB",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2026-08",
+      "lat": 12.897813,
+      "lng": 77.600244,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jp_nagar_4th_phase",
+      "name": "JP Nagar 4th Phase",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2026-08",
+      "lat": 12.906755,
+      "lng": 77.601049,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "tavarekere",
+      "name": "Tavarekere",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2026-08",
+      "lat": 12.927377,
+      "lng": 77.600405,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "dairy_circle",
+      "name": "Dairy Circle",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 12.940866,
+      "lng": 77.602449,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "lakkasandra",
+      "name": "Lakkasandra",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 12.949597,
+      "lng": 77.603141,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "langford_town",
+      "name": "Langford Town",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 12.956822,
+      "lng": 77.606027,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "national_military_school",
+      "name": "National Military School",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 12.965301,
+      "lng": 77.607004,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "shivaji_nagar",
+      "name": "Shivaji Nagar",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 12.983712,
+      "lng": 77.602181,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "cantonment_railway_station",
+      "name": "Cantonment Railway Station",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 12.991794,
+      "lng": 77.606306,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "pottery_town",
+      "name": "Pottery Town",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 13.000836,
+      "lng": 77.609739,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "tannery_road",
+      "name": "Tannery Road",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 13.008942,
+      "lng": 77.613576,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "venkateshpura",
+      "name": "Venkateshpura",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 13.01757,
+      "lng": 77.61789,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kadugundanahalli",
+      "name": "Kadugundanahalli",
+      "lines": [
+        "Pink"
+      ],
+      "status": "under_construction",
+      "date": "2027-03",
+      "lat": 13.027521,
+      "lng": 77.620098,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "nagawara",
+      "name": "Nagawara",
+      "lines": [
+        "Pink",
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 13.04051,
+      "lng": 77.62466,
+      "interchange": true,
+      "note": "",
+      "blue_date": "2027-12"
+    },
+    {
+      "id": "hsr_layout",
+      "name": "HSR Layout",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9164334,
+      "lng": 77.6330799,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "agara",
+      "name": "Agara",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.92053,
+      "lng": 77.64359,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "ibbaluru",
+      "name": "Ibbaluru",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.92125,
+      "lng": 77.6625,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "bellandur",
+      "name": "Bellandur",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.928067,
+      "lng": 77.6808715,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kadubeesanahalli",
+      "name": "Kadubeesanahalli",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9352717,
+      "lng": 77.6908869,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kodibeesanahalli",
+      "name": "Kodibeesanahalli",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9431244,
+      "lng": 77.6974073,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "marathahalli",
+      "name": "Marathahalli",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 12.9542496,
+      "lng": 77.7004624,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "isro",
+      "name": "ISRO",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9677895,
+      "lng": 77.7017819,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "doddanekundi",
+      "name": "Doddanekundi",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9750348,
+      "lng": 77.6975012,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "drdo_sports_complex",
+      "name": "DRDO Sports Complex",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9827923,
+      "lng": 77.692802,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "sarasvathi_nagara",
+      "name": "Sarasvathi Nagara",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 12.9939471,
+      "lng": 77.685442,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kasturinagara",
+      "name": "Kasturinagara",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.00485,
+      "lng": 77.66318,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "horamavu",
+      "name": "Horamavu",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.01702,
+      "lng": 77.66035,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hrbr_layout",
+      "name": "HRBR Layout",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.02254,
+      "lng": 77.64739,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kalyan_nagar",
+      "name": "Kalyan Nagar",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.02626,
+      "lng": 77.6378,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hbr_layout",
+      "name": "HBR Layout",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.0328,
+      "lng": 77.6297,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "veerannapalya",
+      "name": "Veerannapalya",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2026-12",
+      "lat": 13.04116,
+      "lng": 77.61814,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kempapura",
+      "name": "Kempapura",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.0427,
+      "lng": 77.6054,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "hebbala",
+      "name": "Hebbala",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.044287,
+      "lng": 77.592666,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kodigehalli",
+      "name": "Kodigehalli",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-12",
+      "lat": 13.05702,
+      "lng": 77.59386,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "jakkur_cross",
+      "name": "Jakkur Cross",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.07038,
+      "lng": 77.59347,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "yelahanka",
+      "name": "Yelahanka",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.1021,
+      "lng": 77.60035,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "bagalur_cross",
+      "name": "Bagalur Cross",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.12061,
+      "lng": 77.61056,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "bettahalasuru",
+      "name": "Bettahalasuru",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.1546,
+      "lng": 77.6277,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "doddajala",
+      "name": "Doddajala",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.1886,
+      "lng": 77.64487,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "airport_city",
+      "name": "Airport City",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.19833,
+      "lng": 77.68717,
+      "interchange": false,
+      "note": ""
+    },
+    {
+      "id": "kial_terminals",
+      "name": "KIAL Terminals",
+      "lines": [
+        "Blue"
+      ],
+      "status": "under_construction",
+      "date": "2027-06",
+      "lat": 13.19809,
+      "lng": 77.71245,
+      "interchange": false,
+      "note": ""
+    }
+  ]
+};
+
+const LINE_COLORS = {};
+for (const [k,v] of Object.entries(METRO_DATA.lines)) LINE_COLORS[k] = v.color;
+
+const map = L.map('map', { zoomControl: true }).setView([12.965, 77.605], 11);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap &copy; CARTO',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// Build per-line ordered station lists to draw route lines
+const byLine = {};
+for (const line of Object.keys(METRO_DATA.lines)) byLine[line] = [];
+for (const s of METRO_DATA.stations) {
+  for (const l of s.lines) byLine[l].push(s);
+}
+
+const lineLayers = {};
+for (const [line, list] of Object.entries(byLine)) {
+  const isUC = METRO_DATA.lines[line].status === 'under_construction';
+  const latlngs = list.map(s => [s.lat, s.lng]);
+  const poly = L.polyline(latlngs, {
+    color: LINE_COLORS[line],
+    weight: 4,
+    opacity: 0.85,
+    dashArray: isUC ? '2 8' : null,
+    lineCap: 'round'
+  }).addTo(map);
+  lineLayers[line] = poly;
+}
+
+// Markers
+const markerLayers = {};
+for (const line of Object.keys(byLine)) markerLayers[line] = L.layerGroup().addTo(map);
+
+const markerByStationId = {};
+
+function statusLabel(s){
+  if (s.status === 'operational') return 'Operational';
+  if (s.status === 'under_construction') return 'Under construction';
+  return 'Operational + extension under construction';
+}
+
+function renderDetail(s){
+  const chips = s.lines.map(l => `<span class="chip" style="background:${LINE_COLORS[l]}">${l} Line</span>`).join('');
+  let dateInfo = `<div class="status-row"><span>Status</span><span class="val">${statusLabel(s)}</span></div>`;
+
+  const timelineEvents = [];
+  if (s.date) timelineEvents.push({date: s.date, text: `Opened / expected on the ${s.lines[0]} Line`});
+  if (s.pink_date && s.lines.includes('Pink') && s.date !== s.pink_date) timelineEvents.push({date: s.pink_date, text: 'Pink Line service expected'});
+  if (s.blue_date && s.lines.includes('Blue') && s.date !== s.blue_date) timelineEvents.push({date: s.blue_date, text: 'Blue Line service expected'});
+
+  const liveNews = (window.METRO_NEWS && window.METRO_NEWS[s.id]) || [];
+
+  const timelineHtml = timelineEvents.map(e => `
+    <div class="tl-item">
+      <div class="tl-date">${e.date}</div>
+      <div class="tl-text">${e.text}</div>
+    </div>`).join('');
+
+  const newsHtml = liveNews.length ? liveNews.map(n => `
+    <div class="news-item">
+      <a href="${n.url}" target="_blank" rel="noopener">${n.title}</a>
+      <div class="news-meta">${n.source || ''} ${n.date ? '· ' + n.date : ''}</div>
+    </div>`).join('') : `<div class="no-news">No parsed news yet for this station. Run parser.py alongside this map (serve both from the same folder) to populate live BMRCL / land-acquisition coverage here.</div>`;
+
+  document.getElementById('detail').innerHTML = `
+    <div class="station-name">${s.name}</div>
+    <div class="chips">${chips}</div>
+    ${dateInfo}
+    <div class="section-label">Timeline</div>
+    <div class="timeline">${timelineHtml || '<div class="tl-item"><div class="tl-text">No dated milestones on file.</div></div>'}</div>
+    <div class="section-label">Latest coverage</div>
+    ${newsHtml}
+  `;
+}
+
+for (const s of METRO_DATA.stations) {
+  for (const line of s.lines) {
+    const isUC = METRO_DATA.lines[line].status === 'under_construction';
+    const marker = L.circleMarker([s.lat, s.lng], {
+      radius: s.interchange ? 7 : 5,
+      color: '#0b0e13',
+      weight: s.interchange ? 2 : 1,
+      fillColor: LINE_COLORS[line],
+      fillOpacity: isUC ? 0.55 : 0.95,
+    });
+    marker.bindTooltip(s.name, {direction:'top', offset:[0,-4]});
+    marker.on('click', () => renderDetail(s));
+    marker.addTo(markerLayers[line]);
+  }
+  markerByStationId[s.id] = s;
+}
+
+// Legend with toggles
+const legendEl = document.getElementById('legend');
+for (const [line, meta] of Object.entries(METRO_DATA.lines)) {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `<span class="dot" style="background:${meta.color}"></span>${line}`;
+  item.addEventListener('click', () => {
+    item.classList.toggle('off');
+    const on = !item.classList.contains('off');
+    if (on) { map.addLayer(lineLayers[line]); map.addLayer(markerLayers[line]); }
+    else { map.removeLayer(lineLayers[line]); map.removeLayer(markerLayers[line]); }
+  });
+  legendEl.appendChild(item);
+}
+
+// Search
+const searchEl = document.getElementById('search');
+searchEl.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const q = searchEl.value.trim().toLowerCase();
+  if (!q) return;
+  const hit = METRO_DATA.stations.find(s => s.name.toLowerCase().includes(q));
+  if (hit) {
+    map.setView([hit.lat, hit.lng], 15);
+    renderDetail(hit);
+  }
+});
+
+// Try to load parser output if served over http(s)
+fetch('news.json').then(r => r.ok ? r.json() : null).then(d => { if (d) window.METRO_NEWS = d; }).catch(()=>{});
+</script>
+</body>
+</html>
