@@ -1,7 +1,0 @@
-2026-09-12 20:25:56,415 [INFO] BMRCL page https://english.bmrc.co.in/press-release/ not reachable right now (404 Client Error: Not Found for url: https://english.bmrc.co.in/press-release/) � skipping
-2026-09-12 20:25:56,898 [INFO] BMRCL page https://bmrc.co.in/ not reachable right now (404 Client Error: Not Found for url: https://bmrc.co.in/) � skipping
-2026-09-12 20:29:53,161 [INFO] BMRCL page https://english.bmrc.co.in/press-release/ not reachable right now (404 Client Error: Not Found for url: https://english.bmrc.co.in/press-release/) — skipping
-2026-09-12 20:29:53,248 [INFO] BMRCL page https://bmrc.co.in/ not reachable right now (404 Client Error: Not Found for url: https://bmrc.co.in/) — skipping
-2026-09-12 20:32:30,894 [INFO] BMRCL page https://english.bmrc.co.in/press-release/ not reachable right now (404 Client Error: Not Found for url: https://english.bmrc.co.in/press-release/) — skipping
-2026-09-12 20:32:30,969 [INFO] BMRCL page https://bmrc.co.in/ not reachable right now (404 Client Error: Not Found for url: https://bmrc.co.in/) — skipping
-2026-09-12 20:32:30,982 [INFO] Pass complete: 232 new items. news.json updated.

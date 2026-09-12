@@ -10,9 +10,8 @@ Runs forever (or once with --once). Every cycle it:
   3. Fetches BMRCL's own press-release / tender pages for land acquisition and
      project-status notices.
   4. De-dupes against what it already has, tags each item with the station(s)
-     and/or line(s) it's relevant to, and writes everything to news.json next
-     to this script — the same folder metro_map.html lives in, so the map picks
-     it up automatically when both are served together.
+     and/or line(s) it's relevant to, and writes everything to ../output/news.json,
+     which build_map_data.py folds into points.json for web/map.html.
 
 Usage:
     pip install requests feedparser beautifulsoup4 --break-system-packages
@@ -40,10 +39,14 @@ from bs4 import BeautifulSoup
 # --------------------------------------------------------------------------- #
 
 HERE = Path(__file__).resolve().parent
-STATIONS_FILE = HERE / "stations.json"
-NEWS_FILE = HERE / "news.json"
-SEEN_FILE = HERE / ".parser_seen.json"
-LOG_FILE = HERE / "parser.log"
+ROOT = HERE.parent
+DATA = ROOT / "data"        # source inputs, committed
+OUT = ROOT / "output"       # everything generated
+OUT.mkdir(exist_ok=True)
+STATIONS_FILE = DATA / "stations.json"
+NEWS_FILE = OUT / "news.json"
+SEEN_FILE = OUT / ".parser_seen.json"
+LOG_FILE = OUT / "parser.log"
 
 INTERVAL_MINUTES = 180          # how often to run a full pass when looping
 MAX_ITEMS_PER_STATION = 6
@@ -199,7 +202,7 @@ def tag_stations(title, station_index):
 
 def run_pass():
     if not STATIONS_FILE.exists():
-        log.error("stations.json not found next to parser.py — put it in the same folder.")
+        log.error("stations.json not found at %s — it belongs in the data/ folder.", STATIONS_FILE)
         return
 
     stations_data = json.loads(STATIONS_FILE.read_text())

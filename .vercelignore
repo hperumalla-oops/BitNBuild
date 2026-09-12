@@ -1,0 +1,21 @@
+# Keep the deployment to the web server plus the static assets it serves.
+
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# Local pipeline and database tooling — not part of the running app
+zonal_rag/
+migrations/
+BitNBuild/parsers/
+requirements-pipeline.txt
+
+# Source data: only the photographs are served to the browser
+BitNBuild/data/*
+!BitNBuild/data/mla_photos/
+
+# Generated data: only the two files the map fetches
+BitNBuild/output/*
+!BitNBuild/output/wards.geojson
+!BitNBuild/output/points.json

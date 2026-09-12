@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bengaluru Ward Atlas</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  /* ---- tokens ------------------------------------------------------- */
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --plane: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --rule: #c3c2b7;
+    --border: rgba(11, 11, 11, 0.10);
+    --nodata: #e1e0d9;
+    --shadow: 0 1px 3px rgba(11,11,11,.08), 0 8px 24px rgba(11,11,11,.06);
+    /* sequential blue, light -> dark (low -> high) */
+    --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec;
+    --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #104281;
+    /* status (fixed, never themed) */
+    --status-critical: #d03b3b;
+    --status-serious:  #ec835a;
+    --status-warning:  #fab219;
+    --status-good:     #0ca30c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --plane: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --rule: #383835;
+      --border: rgba(255,255,255,0.10);
+      --nodata: #2c2c2a;
+      --shadow: 0 1px 3px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.4);
+      --seq-1: #0d366b; --seq-2: #104281; --seq-3: #184f95;
+      --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --plane: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --rule: #383835;
+    --border: rgba(255,255,255,0.10);
+    --nodata: #2c2c2a;
+    --shadow: 0 1px 3px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.4);
+    --seq-1: #0d366b; --seq-2: #104281; --seq-3: #184f95;
+    --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--plane);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ---- filter bar: one row, above everything it scopes -------------- */
+  header {
+    flex: none;
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    flex-wrap: wrap;
+    z-index: 700;
+  }
+  .brand { font-weight: 650; letter-spacing: -.01em; white-space: nowrap; }
+  .brand small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; letter-spacing: 0; }
+  .fgroup { display: flex; align-items: center; gap: 7px; }
+  .fgroup > label.cap {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); font-weight: 600;
+  }
+  select, input[type="search"], button {
+    font: inherit;
+    color: var(--text-primary);
+    background: var(--surface-1);
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    padding: 5px 9px;
+  }
+  select { cursor: pointer; }
+  input[type="search"] { width: 170px; }
+  button { cursor: pointer; }
+  button:hover, select:hover, input:hover { border-color: var(--muted); }
+  .toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 9px; border: 1px solid var(--rule); border-radius: 0;
+    cursor: pointer; user-select: none; white-space: nowrap;
+  }
+  .toggle:hover { border-color: var(--muted); }
+  .toggle input { margin: 0; cursor: pointer; }
+  .swatch-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .spacer { flex: 1 1 auto; }
+
+  /* ---- main ---------------------------------------------------------- */
+  main { flex: 1 1 auto; position: relative; min-height: 0; }
+  #map { position: absolute; inset: 0; background: var(--plane); }
+  .leaflet-container { background: var(--plane); font: inherit; }
+
+  /* ---- legend -------------------------------------------------------- */
+  .legend {
+    position: absolute; left: 12px; bottom: 20px; z-index: 600;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 0; padding: 11px 13px; box-shadow: var(--shadow);
+    max-width: 232px;
+  }
+  .legend h4 {
+    margin: 0 0 8px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--muted); font-weight: 600;
+  }
+  .legend-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-secondary); padding: 1.5px 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .legend-chip {
+    width: 22px; height: 11px; border-radius: 0; flex: none;
+    border: 1px solid var(--border);
+  }
+  .legend-sep { height: 1px; background: var(--grid); margin: 9px 0 7px; }
+
+  /* ---- detail panel --------------------------------------------------- */
+  .panel {
+    position: absolute; top: 12px; right: 12px; bottom: 12px; width: 366px;
+    max-width: calc(100vw - 24px);
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 0; box-shadow: var(--shadow);
+    z-index: 650; display: flex; flex-direction: column;
+    transition: transform .18s ease, opacity .18s ease;
+  }
+  .panel[hidden] { display: none; }
+  .panel-head {
+    flex: none; padding: 14px 16px 12px; border-bottom: 1px solid var(--grid);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .panel-head h2 { margin: 0; font-size: 17px; line-height: 1.25; letter-spacing: -.01em; }
+  .panel-head .sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .panel-tabs {
+    flex: none; display: flex; gap: 0; overflow-x: auto;
+    border-bottom: 1px solid var(--grid); padding: 0 10px;
+  }
+  .panel-tabs[hidden] { display: none; }
+  .panel-tabs button {
+    border: none; background: none; border-bottom: 2px solid transparent;
+    padding: 8px 9px; font-size: 12.5px; font-weight: 550; white-space: nowrap;
+    color: var(--muted); border-radius: 0;
+  }
+  .panel-tabs button:hover { color: var(--text-primary); }
+  .panel-tabs button[aria-selected="true"] {
+    color: var(--text-primary); border-bottom-color: var(--seq-4);
+  }
+  .panel-body { overflow-y: auto; padding: 4px 16px 18px; }
+  .panel-body > .sec[hidden] { display: none; }
+  .panel-body > .sec:first-child { margin-top: 12px; }
+  .close-x {
+    margin-left: auto; flex: none; border: none; background: none;
+    font-size: 19px; line-height: 1; color: var(--muted); padding: 2px 5px;
+    border-radius: 0;
+  }
+  .close-x:hover { background: var(--grid); color: var(--text-primary); }
+
+  .sec { margin-top: 16px; }
+  .sec > h3 {
+    margin: 0 0 8px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--muted); font-weight: 600;
+  }
+  /* Both columns must be able to shrink and wrap: an `auto` value column
+     starves the label column to zero width and the two texts overlap
+     (e.g. a long free-text "Expected completion"). */
+  .kv { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: 3px 12px; }
+  .kv dt {
+    color: var(--text-secondary); font-size: 13px;
+    min-width: 0; overflow-wrap: anywhere;
+  }
+  .kv dd {
+    margin: 0; text-align: right; font-variant-numeric: tabular-nums;
+    font-size: 13px; font-weight: 550;
+    min-width: 0; overflow-wrap: anywhere;
+  }
+  .stat-row { display: flex; gap: 10px; margin-top: 2px; }
+  .stat {
+    flex: 1; background: var(--plane); border: 1px solid var(--border);
+    border-radius: 0; padding: 9px 11px;
+  }
+  .stat .v { font-size: 22px; font-weight: 620; letter-spacing: -.02em; line-height: 1.1; }
+  .stat .k { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .status-list { display: flex; flex-direction: column; gap: 4px; }
+  .status-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .status-item .ico { flex: none; font-size: 11px; width: 13px; text-align: center; }
+  .status-item .nm { color: var(--text-secondary); }
+  .status-item .bar { flex: 1; height: 6px; background: var(--grid); border-radius: 0; overflow: hidden; }
+  .status-item .bar > i { display: block; height: 100%; border-radius: 0; }
+  .status-item .n { font-variant-numeric: tabular-nums; font-weight: 550; min-width: 26px; text-align: right; }
+
+  .rep { border-top: 1px solid var(--grid); padding: 8px 0; }
+  .rep:first-child { border-top: none; }
+  .rep .loc { font-size: 13px; line-height: 1.35; }
+  .rep .meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 1px 7px; border-radius: 0; font-size: 11px; font-weight: 600;
+    border: 1px solid var(--border);
+  }
+  .person {
+    display: flex; align-items: center; gap: 11px; padding: 7px 0;
+  }
+  .person + .person { border-top: 1px solid var(--grid); }
+  .avatar {
+    position: relative; flex: none; width: 46px; height: 46px; border-radius: 50%;
+    overflow: hidden; background: var(--plane); border: 1px solid var(--border);
+    display: grid; place-items: center;
+  }
+  .avatar img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+  }
+  .avatar .initials {
+    font-size: 14px; font-weight: 650; color: var(--muted); letter-spacing: .02em;
+  }
+  .pname { font-size: 14px; font-weight: 600; line-height: 1.25; }
+  .prole {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); font-weight: 600; margin-top: 2px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    padding: 2px 9px; border-radius: 0; background: var(--plane);
+    border: 1px solid var(--border); font-size: 12px; color: var(--text-secondary);
+  }
+  .newsitem { border-top: 1px solid var(--grid); padding: 8px 0; }
+  .newsitem:first-child { border-top: none; }
+  .newsitem a { color: var(--text-primary); text-decoration: none; font-size: 13px; line-height: 1.35; }
+  .newsitem a:hover { text-decoration: underline; }
+  .newsitem .meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  .note { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+
+  /* ---- table view ------------------------------------------------------ */
+  /* Above Leaflet's own controls (which sit up to z-index 1000), or the zoom
+     buttons and attribution float over the table and clip its first column. */
+  .tablewrap {
+    position: absolute; inset: 0; z-index: 1200; background: var(--plane);
+    overflow: auto; padding: 16px;
+  }
+  .tablewrap[hidden] { display: none; }
+  table { border-collapse: collapse; width: 100%; background: var(--surface-1); font-size: 13px; }
+  caption { text-align: left; padding: 0 0 10px; color: var(--muted); font-size: 12.5px; }
+  th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+  th:first-child, td:first-child,
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+  td { font-variant-numeric: tabular-nums; }
+  thead th {
+    position: sticky; top: 0; background: var(--surface-1); z-index: 1;
+    border-bottom: 1px solid var(--rule); cursor: pointer;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+  }
+  thead th:hover { color: var(--text-primary); }
+  tbody tr:hover { background: var(--plane); }
+
+  /* ---- map popups ------------------------------------------------------- */
+  .leaflet-popup-content-wrapper {
+    background: var(--surface-1); color: var(--text-primary);
+    border-radius: 0; box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .leaflet-popup-tip { background: var(--surface-1); border: 1px solid var(--border); }
+  .leaflet-popup-content { margin: 11px 13px; font: inherit; }
+  .pop-title { font-weight: 620; font-size: 14px; margin-bottom: 3px; }
+  .pop-sub { color: var(--muted); font-size: 12px; }
+  .ward-tip {
+    background: var(--surface-1); border: 1px solid var(--border);
+    color: var(--text-primary); box-shadow: var(--shadow);
+    border-radius: 0; padding: 6px 9px; font: inherit; font-size: 12.5px;
+  }
+  .ward-tip::before { display: none; }
+  .ward-tip .v { font-weight: 650; font-variant-numeric: tabular-nums; }
+  .ward-tip .n { color: var(--muted); font-size: 11.5px; }
+
+  .loading {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    z-index: 900; background: var(--plane); color: var(--muted);
+  }
+  .loading[hidden] { display: none; }
+  .err { color: var(--status-critical); max-width: 460px; text-align: center; line-height: 1.5; }
+
+
+  /* ---- tabs & chat ---------------------------------------------------- */
+  .tabs { display: flex; gap: 2px; background: var(--grid);
+          border: 1px solid var(--border); border-radius: 0; padding: 2px; }
+  .tabs button {
+    border: none; background: none; border-radius: 0; padding: 4px 14px;
+    color: var(--text-secondary); font-weight: 550;
+  }
+  .tabs button[aria-selected="true"] {
+    background: var(--surface-1); color: var(--text-primary); font-weight: 650;
+    box-shadow: 0 1px 2px rgba(0,0,0,.14);
+  }
+  .mapctrls, .chatctrls { display: contents; }
+  .mapctrls[hidden], .chatctrls[hidden] { display: none; }
+  .seg { display: flex; gap: 2px; background: var(--grid);
+         border: 1px solid var(--border); border-radius: 0; padding: 2px; }
+  .seg button {
+    border: none; background: none; border-radius: 0; padding: 4px 11px;
+    color: var(--text-secondary); font-size: 13px;
+  }
+  .seg button[aria-checked="true"] {
+    background: var(--surface-1); color: var(--text-primary); font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  }
+  .health { font-size: 12px; color: var(--muted); }
+  .health.bad { color: var(--status-critical); }
+
+  .chatview {
+    position: absolute; inset: 0; z-index: 1100; background: var(--plane);
+    display: flex; min-height: 0;
+  }
+  .chatview[hidden] { display: none; }
+  .threads {
+    flex: none; width: 216px; border-right: 1px solid var(--border);
+    background: var(--surface-1); display: flex; flex-direction: column;
+    padding: 10px; gap: 8px; min-height: 0;
+  }
+  .newchat { width: 100%; text-align: left; font-weight: 550; }
+  .threads ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1 1 auto; }
+  .threads li { display: flex; align-items: center; gap: 4px; }
+  .threads li > button.pick {
+    flex: 1 1 auto; min-width: 0; text-align: left; border: none;
+    background: none; padding: 6px 8px; border-radius: 0;
+    color: var(--text-secondary); font-size: 13px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .threads li > button.pick:hover { background: var(--plane); }
+  .threads li.on > button.pick { background: var(--plane); color: var(--text-primary); font-weight: 550; }
+  .threads li > button.del {
+    border: none; background: none; color: var(--muted); padding: 4px 6px;
+    border-radius: 0; opacity: 0; font-size: 15px; line-height: 1;
+  }
+  .threads li:hover > button.del { opacity: 1; }
+  .threads li > button.del:hover { background: var(--grid); color: var(--status-critical); }
+  .threadnote { margin: 0; font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  .convo { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .messages { flex: 1 1 auto; overflow-y: auto; padding: 20px 24px; }
+  .msg { max-width: 760px; margin: 0 auto 18px; display: flex; gap: 11px; }
+  .msg .who {
+    flex: none; width: 26px; height: 26px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 11px; font-weight: 650;
+    background: var(--plane); border: 1px solid var(--border); color: var(--muted);
+  }
+  .msg.user .who { background: var(--seq-4); color: #fff; border-color: transparent; }
+  .msg .body { min-width: 0; flex: 1 1 auto; padding-top: 2px; }
+  .msg .body > *:first-child { margin-top: 0; }
+  .msg .body > *:last-child { margin-bottom: 0; }
+  .msg .body p { margin: 0 0 9px; }
+  .msg .body ul { margin: 0 0 9px; padding-left: 20px; }
+  .msg .body li { margin: 2px 0; }
+  .msg .body code {
+    background: var(--plane); border: 1px solid var(--border);
+    border-radius: 0; padding: 1px 5px; font-size: 12.5px;
+  }
+  .msg .body a { color: var(--seq-4); text-decoration: none; font-weight: 550; }
+  .msg .body a:hover { text-decoration: underline; }
+  .msg .body a.maplink::after { content: "↗"; font-size: 11px; padding-left: 3px; }
+  .toolrow { display: flex; flex-wrap: wrap; gap: 5px; margin: 0 0 9px; }
+  .toolchip {
+    font-size: 11px; padding: 1.5px 8px; border-radius: 0;
+    background: var(--plane); border: 1px solid var(--border); color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .toolchip.bad { color: var(--status-critical); border-color: var(--status-critical); }
+  .empty { max-width: 760px; margin: 8vh auto 0; color: var(--muted); text-align: center; }
+  .empty h3 { margin: 0 0 6px; color: var(--text-primary); font-size: 17px; }
+  .examples { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 16px; }
+  .examples button {
+    font-size: 12.5px; color: var(--text-secondary); border-radius: 0;
+    padding: 5px 12px; background: var(--surface-1);
+  }
+  .composer {
+    flex: none; border-top: 1px solid var(--border); background: var(--surface-1);
+    padding: 12px 24px; display: flex; gap: 9px; align-items: flex-end;
+  }
+  .composer textarea {
+    flex: 1 1 auto; resize: none; font: inherit; color: var(--text-primary);
+    background: var(--plane); border: 1px solid var(--rule); border-radius: 0;
+    padding: 9px 11px; max-height: 180px; min-height: 38px; line-height: 1.45;
+  }
+  .composer textarea:focus { outline: none; border-color: var(--seq-4); }
+  .composer button { padding: 9px 18px; font-weight: 550; align-self: stretch; }
+  .composer button[disabled] { opacity: .5; cursor: default; }
+  .typing { display: inline-flex; gap: 3px; align-items: center; }
+  .typing i {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--muted);
+    animation: blink 1.2s infinite;
+  }
+  .typing i:nth-child(2) { animation-delay: .2s; }
+  .typing i:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,60%,100% { opacity:.25 } 30% { opacity:1 } }
+  @media (prefers-reduced-motion: reduce) { .typing i { animation: none; opacity: .5; } }
+
+  @media (max-width: 760px) {
+    .threads { width: 132px; }
+    .messages, .composer { padding-left: 12px; padding-right: 12px; }
+  }
+
+  @media (max-width: 760px) {
+    /* Everything here exists to stop the header forcing the page wider than
+       the viewport — which clipped the panel's values off the right edge. */
+    header { padding: 8px 10px; gap: 8px 12px; }
+    .brand { font-size: 13px; }
+    .fgroup { min-width: 0; flex-wrap: wrap; }
+    .fgroup > label.cap { font-size: 10px; }
+    select { min-width: 0; max-width: 46vw; }
+    .spacer { display: none; }
+    input[type="search"] { width: auto; flex: 1 1 110px; min-width: 0; }
+    .panel {
+      top: auto; bottom: 0; right: 0; left: 0; width: auto;
+      max-height: 58%; border-radius: 0;
+    }
+    .legend {
+      /* left:56px clears Leaflet's zoom control, which sits top-left */
+      bottom: auto; top: 10px; left: 56px; right: 10px; max-width: none;
+      max-height: 30vh; overflow: auto; padding: 9px 11px;
+      display: flex; flex-wrap: wrap; gap: 2px 14px; align-items: center;
+    }
+    .legend h4 { width: 100%; margin: 0 0 2px; }
+    .legend-sep { display: none; }
+  }
+  @media (forced-colors: active) {
+    .legend-chip, .swatch-dot { forced-color-adjust: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Bengaluru Ward Atlas<small>369 GBA wards &middot; 2025 scheme</small></div>
+
+  <nav class="tabs" role="tablist" aria-label="View">
+    <button role="tab" data-tab="map" aria-selected="true">Map</button>
+    <button role="tab" data-tab="chat" aria-selected="false">Chat</button>
+  </nav>
+
+  <div class="mapctrls">
+  <div class="fgroup">
+    <label class="cap" for="metric">Shade by</label>
+    <select id="metric">
+      <optgroup label="Civic reports">
+        <option value="reportTotal">Reports (total)</option>
+        <option value="reportUnresolved">Reports unresolved</option>
+        <option value="reportDensity">Reports per sq km</option>
+        <option value="reportsPer1000">Reports per 1,000 people</option>
+      </optgroup>
+      <optgroup label="Civic status">
+        <option value="civicPressureScore">Civic pressure score</option>
+        <option value="allowedHeightM">Allowed height (m)</option>
+      </optgroup>
+      <optgroup label="Demographics">
+        <option value="population">Population</option>
+        <option value="popDensity">Population per sq km</option>
+        <option value="areaSqKm">Area (sq km)</option>
+      </optgroup>
+      <option value="none">&mdash; No shading &mdash;</option>
+    </select>
+  </div>
+
+  <div class="fgroup">
+    <label class="cap">Points</label>
+    <label class="toggle"><input type="checkbox" id="t-stations" checked><span class="swatch-dot" style="background:#8e44ad"></span>Metro stations</label>
+    <label class="toggle"><input type="checkbox" id="t-infra" checked><span class="swatch-dot" style="background:var(--status-serious)"></span>Road projects</label>
+  </div>
+
+  <div class="fgroup">
+    <label class="cap" for="q">Find ward</label>
+    <input type="search" id="q" placeholder="e.g. Jayanagar" autocomplete="off" list="wardnames">
+    <datalist id="wardnames"></datalist>
+  </div>
+  </div>
+
+  <div class="chatctrls" hidden>
+    <div class="fgroup">
+      <label class="cap">Query</label>
+      <div class="seg" role="radiogroup" aria-label="Dataset">
+        <button role="radio" data-mode="map" aria-checked="true">Map data</button>
+        <button role="radio" data-mode="zoning" aria-checked="false">Zoning data</button>
+      </div>
+    </div>
+    <span class="health" id="chat-health"></span>
+  </div>
+
+  <div class="spacer"></div>
+  <button id="btn-table" aria-pressed="false">Table view</button>
+  <button id="btn-theme" title="Toggle light / dark">&#9681;</button>
+</header>
+
+<main>
+  <div id="map"></div>
+
+  <section class="legend" id="legend" aria-label="Map legend"></section>
+
+  <aside class="panel" id="panel" hidden aria-live="polite">
+    <div class="panel-head">
+      <div>
+        <h2 id="p-title"></h2>
+        <div class="sub" id="p-sub"></div>
+      </div>
+      <button class="close-x" id="p-close" aria-label="Close panel">&times;</button>
+    </div>
+    <nav class="panel-tabs" id="p-tabs" role="tablist" hidden></nav>
+    <div class="panel-body" id="p-body"></div>
+  </aside>
+
+  <div class="tablewrap" id="tablewrap" hidden></div>
+
+  <div class="loading" id="loading">Loading ward data&hellip;</div>
+
+  <section class="chatview" id="chatview" hidden>
+    <aside class="threads">
+      <button class="newchat" id="new-chat">+ New chat</button>
+      <ul id="thread-list"></ul>
+      <p class="threadnote">Chats live in this browser only.</p>
+    </aside>
+    <div class="convo">
+      <div class="messages" id="messages"></div>
+      <form class="composer" id="composer">
+        <textarea id="chat-input" rows="1" placeholder="Ask about wards, reports, stations&hellip;"
+                  autocomplete="off"></textarea>
+        <button type="submit" id="chat-send">Send</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- Supabase credentials for the browser, both optional and both harmless if
+     missing — the map then reads the generated files in ../output/ instead.
+     config.js is written by parsers/make_web_config.py for a static local
+     server; /api/config.js is served from environment variables and is what a
+     deployed build uses, so it is loaded second and wins. -->
+<script src="config.js" onerror="void 0"></script>
+<script src="/api/config.js" onerror="void 0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  (function () {
+    var t = new URLSearchParams(location.search).get("theme");
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+  })();
+
+  // ---- metric definitions ------------------------------------------------
+  var METRICS = {
+    reportTotal:        { label: "Reports (total)",          unit: "reports",   fmt: n0, ramp: "orange" },
+    reportUnresolved:   { label: "Reports unresolved",       unit: "unresolved",fmt: n0, ramp: "orange" },
+    reportDensity:      { label: "Reports per sq km",        unit: "per sq km", fmt: n1, ramp: "orange" },
+    reportsPer1000:     { label: "Reports per 1,000 people", unit: "per 1,000", fmt: n2, ramp: "orange" },
+    civicPressureScore: { label: "Civic pressure score",     unit: "score",     fmt: n0, ramp: "red" },
+    allowedHeightM:     { label: "Allowed height",           unit: "m",         fmt: n0, ramp: "violet" },
+    population:         { label: "Population",               unit: "people",    fmt: n0, ramp: "blue" },
+    popDensity:         { label: "Population per sq km",     unit: "per sq km", fmt: n0, ramp: "blue" },
+    areaSqKm:           { label: "Area",                     unit: "sq km",     fmt: n2, ramp: "teal" }
+  };
+
+
+  // One hue per metric, so the shading itself says which measure is on screen.
+  // Each is a single-hue sequential ramp, light -> dark on the light surface
+  // and dark -> light on the dark one, so "near zero" always recedes toward
+  // the background. Never a rainbow: hue carries identity, lightness carries
+  // magnitude.
+  var RAMPS = {
+    blue:   { light: ["#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#104281"],
+              dark:  ["#0d366b","#104281","#184f95","#256abf","#3987e5","#6da7ec"] },
+    orange: { light: ["#fde3d0","#fbc7a4","#f7a873","#ee8244","#d1622a","#9c4519"],
+              dark:  ["#5c2a10","#7d3a16","#9c4519","#c25a24","#ee8244","#f7a873"] },
+    red:    { light: ["#fbdcda","#f6b8b4","#ec8e8a","#dd6058","#bc3d36","#8c2a25"],
+              dark:  ["#54201c","#6f2b25","#8c2a25","#b23f37","#dd6058","#ec8e8a"] },
+    violet: { light: ["#e3ddf8","#c6bcf0","#a598e4","#8172d2","#61529f","#463a75"],
+              dark:  ["#2c2450","#3b3169","#463a75","#61529f","#8172d2","#a598e4"] },
+    teal:   { light: ["#d0eae4","#a3d6cb","#74bfaf","#45a18e","#2d7f6e","#1d5c50"],
+              dark:  ["#104036","#175247","#1d5c50","#2d7f6e","#45a18e","#74bfaf"] },
+    green:  { light: ["#dcecc9","#bcdb9d","#98c66f","#75ab48","#578436","#3e6026"],
+              dark:  ["#254019","#325520","#3e6026","#578436","#75ab48","#98c66f"] }
+  };
+
+  var STATUS = {
+    Critical: { color: "var(--status-critical)", icon: "▲", rank: 0 },
+    Severe:   { color: "var(--status-serious)",  icon: "◆", rank: 1 },
+    Moderate: { color: "var(--status-warning)",  icon: "●", rank: 2 },
+    Minor:    { color: "var(--muted)",           icon: "○", rank: 3 },
+    Resolved: { color: "var(--status-good)",     icon: "✓", rank: 4 }
+  };
+
+  var state = {
+    metric: "reportTotal",
+    bins: [],
+    wards: null,
+    points: null,
+    byKey: {},
+    selected: null,
+    tableSort: { col: "reportTotal", dir: -1 },
+    photos: {}          // exact name -> filename, from web/mla-photos.json
+  };
+
+  // ---- formatting --------------------------------------------------------
+  function n0(v) { return v == null ? "—" : Math.round(v).toLocaleString("en-IN"); }
+  function n1(v) { return v == null ? "—" : v.toFixed(1); }
+  function n2(v) { return v == null ? "—" : v.toFixed(2); }
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;   // untrusted data never touches innerHTML
+    return n;
+  }
+  // A named representative with, where we have one, their photograph.
+  function personCard(role, name, photo) {
+    var card = el("div", "person");
+    var img = el("div", "avatar");
+    if (photo) {
+      var im = document.createElement("img");
+      im.src = "../data/mla_photos/" + photo;
+      im.alt = "";                       // decorative; the name is beside it
+      im.loading = "lazy";
+      // a missing file should leave the initials, not a broken-image icon
+      im.onerror = function () { img.removeChild(im); };
+      img.appendChild(im);
+    }
+    img.appendChild(el("span", "initials", name.split(/\s+/)
+      .filter(function (x) { return /^[A-Za-z]/.test(x); })
+      .slice(0, 2).map(function (x) { return x[0].toUpperCase(); }).join("")));
+    card.appendChild(img);
+    var txt = el("div", "pmeta");
+    txt.appendChild(el("div", "pname", name));
+    txt.appendChild(el("div", "prole", role));
+    card.appendChild(txt);
+    return card;
+  }
+
+  function safeHref(u) {
+    return (typeof u === "string" && /^https?:\/\//i.test(u)) ? u : null;
+  }
+
+  // ---- binning -----------------------------------------------------------
+  // Quantile breaks, de-duplicated. Falls back to equal interval when a metric
+  // is so zero-heavy that the quantiles collapse onto one value.
+  function computeBins(values, want) {
+    var v = values.filter(function (x) { return x != null && isFinite(x); })
+                  .sort(function (a, b) { return a - b; });
+    if (!v.length) return [];
+    var min = v[0], max = v[v.length - 1];
+    if (min === max) return [min];
+    var cuts = [], i;
+    for (i = 1; i < want; i++) cuts.push(v[Math.floor(i / want * v.length)]);
+    cuts = cuts.filter(function (x, j, a) { return x > min && a.indexOf(x) === j; });
+    if (cuts.length < want - 1) {
+      cuts = [];
+      for (i = 1; i < want; i++) cuts.push(min + (max - min) * i / want);
+      cuts = cuts.filter(function (x, j, a) { return a.indexOf(x) === j; });
+    }
+    return [min].concat(cuts);
+  }
+
+  function binIndex(value) {
+    if (value == null || !isFinite(value)) return -1;
+    var b = state.bins, i;
+    for (i = b.length - 1; i >= 0; i--) if (value >= b[i]) return i;
+    return 0;
+  }
+
+  function isDark() {
+    var a = document.documentElement.getAttribute("data-theme");
+    if (a) return a === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  function rampColor(i) {
+    var name = (METRICS[state.metric] || {}).ramp || "blue";
+    var steps = RAMPS[name][isDark() ? "dark" : "light"];
+    return steps[Math.min(steps.length - 1, Math.max(0, i))];
+  }
+
+  // ---- ward styling ------------------------------------------------------
+  function wardStyle(feature) {
+    var base = {
+      weight: 0.6,
+      color: cssVar("--rule"),
+      opacity: 0.9,
+      fillOpacity: 0.82
+    };
+    if (state.metric === "none") {
+      base.fillColor = cssVar("--nodata");
+      base.fillOpacity = 0.35;
+      return base;
+    }
+    var i = binIndex(feature.properties[state.metric]);
+    base.fillColor = i < 0 ? cssVar("--nodata") : rampColor(i);
+    if (i < 0) base.fillOpacity = 0.5;
+    return base;
+  }
+
+  function highlightStyle() {
+    return { weight: 2.4, color: cssVar("--text-primary"), opacity: 1, fillOpacity: 0.92 };
+  }
+
+  // ---- legend ------------------------------------------------------------
+  function renderLegend() {
+    var box = document.getElementById("legend");
+    box.textContent = "";
+
+    if (state.metric !== "none") {
+      var m = METRICS[state.metric];
+      box.appendChild(el("h4", null, m.label));
+      var b = state.bins, i;
+      for (i = b.length - 1; i >= 0; i--) {
+        var row = el("div", "legend-row");
+        var chip = el("span", "legend-chip");
+        chip.style.background = rampColor(i);
+        row.appendChild(chip);
+        var hi = (i === b.length - 1) ? null : b[i + 1];
+        var txt = hi == null ? m.fmt(b[i]) + "+"
+                             : m.fmt(b[i]) + " – " + m.fmt(hi);
+        row.appendChild(el("span", null, txt));
+        box.appendChild(row);
+      }
+      var nd = el("div", "legend-row");
+      var ndc = el("span", "legend-chip");
+      ndc.style.background = cssVar("--nodata");
+      nd.appendChild(ndc);
+      nd.appendChild(el("span", null, "No data"));
+      box.appendChild(nd);
+    }
+
+    var anyPoints = document.getElementById("t-stations").checked ||
+                    document.getElementById("t-infra").checked;
+    if (anyPoints) {
+      if (state.metric !== "none") box.appendChild(el("div", "legend-sep"));
+      box.appendChild(el("h4", null, "Points"));
+      if (document.getElementById("t-stations").checked) {
+        var lines = state.points.metroLines;
+        // jsonb sorts object keys, so Supabase loses the source order of the
+        // lines. Both sources carry an explicit `order`; fall back to
+        // insertion order for any file that predates it.
+        Object.keys(lines).sort(function (a, b) {
+          return (lines[a].order || 0) - (lines[b].order || 0);
+        }).forEach(function (name) {
+          var row = el("div", "legend-row");
+          var dot = el("span", "swatch-dot");
+          dot.style.background = lines[name].color;
+          dot.style.boxShadow = "0 0 0 1.5px " + cssVar("--surface-1");
+          row.appendChild(dot);
+          // The line's name IS its colour, so the text label carries identity —
+          // these official hues do not pass a CVD check on their own.
+          row.appendChild(el("span", null, name + " Line"));
+          box.appendChild(row);
+        });
+      }
+      if (document.getElementById("t-infra").checked) {
+        var row2 = el("div", "legend-row");
+        var d2 = el("span", "swatch-dot");
+        d2.style.background = cssVar("--status-serious");
+        d2.style.borderRadius = "2px";
+        d2.style.transform = "rotate(45deg)";
+        row2.appendChild(d2);
+        row2.appendChild(el("span", null, "Road project"));
+        box.appendChild(row2);
+      }
+    }
+  }
+
+  // ---- map ---------------------------------------------------------------
+  // zoomSnap < 1 lets fitBounds land between integer zooms — otherwise the
+  // city sits at half scale in a large viewport.
+  var map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 9, zoomSnap: 0.25 });
+  L.control.scale({ imperial: false }).addTo(map);
+
+  var wardLayer, stationLayer, infraLayer;
+
+  function fmtMetricValue(p) {
+    if (state.metric === "none") return null;
+    var m = METRICS[state.metric];
+    var v = p[state.metric];
+    if (v == null) return "No data";
+    return m.fmt(v) + " " + m.unit;
+  }
+
+  function buildWardLayer() {
+    wardLayer = L.geoJSON(state.wards, {
+      style: wardStyle,
+      onEachFeature: function (feature, layer) {
+        var p = feature.properties;
+        layer.bindTooltip(function () {
+          var w = el("div");
+          w.appendChild(el("div", "v", p.wardName));
+          var sub = fmtMetricValue(p);
+          if (sub) w.appendChild(el("div", "n", sub));
+          else w.appendChild(el("div", "n", p.corporation + " · ward " + p.wardId));
+          return w;
+        }, { className: "ward-tip", sticky: true, opacity: 1 });
+
+        layer.on("mouseover", function () { layer.setStyle(highlightStyle()); });
+        layer.on("mouseout", function () {
+          if (state.selected !== p.wardKey) wardLayer.resetStyle(layer);
+        });
+        layer.on("click", function () { selectWard(p.wardKey); });
+      }
+    }).addTo(map);
+    map.fitBounds(wardLayer.getBounds(), { padding: [16, 16] });
+  }
+
+  function restyleWards() {
+    wardLayer.setStyle(wardStyle);
+    if (state.selected) {
+      wardLayer.eachLayer(function (l) {
+        if (l.feature.properties.wardKey === state.selected) l.setStyle(highlightStyle());
+      });
+    }
+  }
+
+  // ---- points ------------------------------------------------------------
+  function buildStationLayer() {
+    var lines = state.points.metroLines;
+    stationLayer = L.layerGroup();
+
+    // Draw each route first so the station dots sit on top of it. The order
+    // comes from metroLines[<line>].stations, which the build computes by
+    // inserting interchanges where they belong along the route rather than
+    // where the source file happens to list them.
+    var byId = {};
+    state.points.stations.forEach(function (s) { byId[s.id] = s; });
+    Object.keys(lines).forEach(function (name) {
+      var seq = lines[name].stations || [];
+      var pts = seq.map(function (id) { return byId[id]; })
+                   .filter(Boolean)
+                   .map(function (s) { return [s.lat, s.lng]; });
+      if (pts.length < 2) return;
+      // casing first: a wider stroke in the surface colour separates the route
+      // from the ward fill under it, whatever hue the active metric is using
+      stationLayer.addLayer(L.polyline(pts, {
+        color: cssVar("--surface-1"), weight: 6.5, opacity: 0.85,
+        lineJoin: "round", lineCap: "round", interactive: false
+      }));
+      stationLayer.addLayer(L.polyline(pts, {
+        color: lines[name].color,
+        weight: 3.5,
+        opacity: 1,
+        lineJoin: "round",
+        lineCap: "round",
+        // an unbuilt line reads as provisional, same as the road projects
+        dashArray: lines[name].status === "operational" ? null : "7,6",
+        interactive: false
+      }));
+    });
+
+    state.points.stations.forEach(function (s) {
+      var color = (lines[s.lines[0]] || {}).color || cssVar("--muted");
+      var operational = s.status.indexOf("operational") === 0;
+
+      // Transparent hit target — the painted dot is far smaller than 24px.
+      var hit = L.circleMarker([s.lat, s.lng], {
+        radius: 12, stroke: false, fillOpacity: 0, interactive: true
+      });
+      var dot = L.circleMarker([s.lat, s.lng], {
+        radius: s.interchange ? 7 : 5,
+        fillColor: color,
+        fillOpacity: 1,
+        color: cssVar("--surface-1"),
+        weight: s.interchange ? 3 : 2,   // 2px surface ring on overlapping marks
+        opacity: 1,
+        dashArray: operational ? null : "2,2",
+        interactive: false
+      });
+      hit.on("click", function () { showStation(s); });
+      hit.bindTooltip(s.name, { className: "ward-tip", direction: "top", offset: [0, -6] });
+      stationLayer.addLayer(dot);
+      stationLayer.addLayer(hit);
+    });
+    if (document.getElementById("t-stations").checked) stationLayer.addTo(map);
+  }
+
+  function buildInfraLayer() {
+    infraLayer = L.layerGroup();
+    var col = cssVar("--status-serious");
+    state.points.projects.forEach(function (p) {
+      var built = p.status === "under_construction" || p.status === "approved";
+      if (p.path && p.path.length > 1) {
+        infraLayer.addLayer(L.polyline(p.path, {
+          color: cssVar("--surface-1"), weight: 5, opacity: 0.8,
+          lineJoin: "round", interactive: false
+        }));
+        infraLayer.addLayer(L.polyline(p.path, {
+          color: col, weight: 2.5, opacity: 1,
+          dashArray: built ? null : "6,5", interactive: false
+        }));
+      }
+      var anchor = p.point || p.path[0];
+      var hit = L.circleMarker(anchor, { radius: 12, stroke: false, fillOpacity: 0 });
+      // Square marker distinguishes a project from a station without using hue.
+      var mark = L.marker(anchor, {
+        interactive: false,
+        icon: L.divIcon({
+          className: "",
+          iconSize: [12, 12],
+          iconAnchor: [6, 6],
+          html: '<div style="width:10px;height:10px;background:' + col +
+                ';border:2px solid ' + cssVar("--surface-1") +
+                ';transform:rotate(45deg)"></div>'
+        })
+      });
+      hit.on("click", function () { showProject(p); });
+      hit.bindTooltip(p.name, { className: "ward-tip", direction: "top", offset: [0, -6] });
+      infraLayer.addLayer(mark);
+      infraLayer.addLayer(hit);
+    });
+    if (document.getElementById("t-infra").checked) infraLayer.addTo(map);
+  }
+
+  // ---- panel rendering ----------------------------------------------------
+  var panel = document.getElementById("panel");
+  var pTitle = document.getElementById("p-title");
+  var pSub = document.getElementById("p-sub");
+  var pBody = document.getElementById("p-body");
+  var pTabs = document.getElementById("p-tabs");
+
+  // The panel is split into sub-tabs. Each section() call opens a pane; the
+  // strip at the top switches between them, so a ward with 141 itemised
+  // reports no longer buries its representatives under a long scroll.
+  var panes = [];
+
+  function openPanel(title, sub) {
+    pTitle.textContent = title;
+    pSub.textContent = sub || "";
+    pBody.textContent = "";
+    pTabs.textContent = "";
+    pTabs.hidden = true;
+    panes = [];
+    panel.hidden = false;
+    pBody.scrollTop = 0;
+  }
+
+  function section(title) {
+    var s = el("div", "sec");
+    if (title) s.appendChild(el("h3", null, title));
+    pBody.appendChild(s);
+    if (title) panes.push({ title: title, node: s });
+    return s;
+  }
+
+  function showPane(i) {
+    panes.forEach(function (p, j) {
+      p.node.hidden = j !== i;
+      p.btn.setAttribute("aria-selected", String(j === i));
+    });
+    pBody.scrollTop = 0;
+  }
+
+  // Called once a panel is fully built: turn its sections into tabs.
+  function finishPanel(shortLabels) {
+    if (panes.length < 2) return;
+    panes.forEach(function (p, i) {
+      var b = el("button", null, (shortLabels && shortLabels[p.title]) || p.title);
+      b.setAttribute("role", "tab");
+      b.onclick = function () { showPane(i); };
+      p.btn = b;
+      pTabs.appendChild(b);
+      // the heading is redundant once its title is the tab label
+      var h = p.node.querySelector("h3");
+      if (h) p.node.removeChild(h);
+    });
+    pTabs.hidden = false;
+    showPane(0);
+  }
+  function kv(parent, rows) {
+    var dl = el("dl", "kv");
+    rows.forEach(function (r) {
+      if (r[1] == null || r[1] === "" || r[1] === "—") return;
+      dl.appendChild(el("dt", null, r[0]));
+      dl.appendChild(el("dd", null, String(r[1])));
+    });
+    if (dl.childNodes.length) parent.appendChild(dl);
+    return dl;
+  }
+
+  function selectWard(key, skipZoom) {
+    var f = state.byKey[key];
+    if (!f) return;
+    state.selected = key;
+    restyleWards();
+    renderWardPanel(f.properties);
+    if (!skipZoom) map.fitBounds(f.layer.getBounds(), { padding: [60, 60], maxZoom: 14 });
+    try {
+      history.replaceState(null, "", "?ward=" + encodeURIComponent(key));
+    } catch (e) { /* file:// or sandboxed — deep link just won't update */ }
+  }
+
+  function renderWardPanel(p) {
+    openPanel(p.wardName, p.corporation + " · Ward " + p.wardId + " · " + p.assembly);
+
+    // --- reports
+    var s = section("Civic reports");
+    if (!p.hasReports) {
+      s.appendChild(el("div", "note",
+        "This ward has no entry in the civic report dataset. That is different from a ward with zero reports."));
+    } else {
+      var row = el("div", "stat-row");
+      [["reportTotal", "total reports"], ["reportUnresolved", "unresolved"]].forEach(function (pair) {
+        var box = el("div", "stat");
+        box.appendChild(el("div", "v", n0(p[pair[0]])));
+        box.appendChild(el("div", "k", pair[1]));
+        row.appendChild(box);
+      });
+      s.appendChild(row);
+      kv(s, [
+        ["Per sq km", p.reportDensity == null ? null : n1(p.reportDensity)],
+        ["Per 1,000 people", p.reportsPer1000 == null ? null : n2(p.reportsPer1000)]
+      ]);
+
+      var sc = p.statusCounts || {};
+      var keys = Object.keys(sc);
+      if (keys.length) {
+        var maxv = Math.max.apply(null, keys.map(function (k) { return sc[k]; }));
+        var list = el("div", "status-list");
+        list.style.marginTop = "10px";
+        keys.sort(function (a, b) {
+          return (STATUS[a] ? STATUS[a].rank : 9) - (STATUS[b] ? STATUS[b].rank : 9);
+        }).forEach(function (k) {
+          var meta = STATUS[k] || { color: "var(--muted)", icon: "○" };
+          var it = el("div", "status-item");
+          var ico = el("span", "ico", meta.icon);      // icon + label, never colour alone
+          ico.style.color = meta.color;
+          it.appendChild(ico);
+          it.appendChild(el("span", "nm", k));
+          var bar = el("span", "bar");
+          var fill = el("i");
+          fill.style.width = (sc[k] / maxv * 100) + "%";
+          fill.style.background = meta.color;
+          bar.appendChild(fill);
+          it.appendChild(bar);
+          it.appendChild(el("span", "n", n0(sc[k])));
+          list.appendChild(it);
+        });
+        s.appendChild(list);
+      }
+
+      if (p.reports && p.reports.length) {
+        var rs = s;
+        rs.appendChild(el("h3", null, "Individual reports (" + p.reports.length + ")"));
+        p.reports.forEach(function (r) {
+          var d = el("div", "rep");
+          d.appendChild(el("div", "loc", r.location || "(no location given)"));
+          var meta = el("div", "meta");
+          var st = STATUS[r.status];
+          if (r.status) {
+            var tag = el("span", "tag", (st ? st.icon + " " : "") + r.status);
+            tag.style.color = st ? st.color : "var(--muted)";
+            meta.appendChild(tag);
+          }
+          if (r.count != null) meta.appendChild(el("span", null, r.count + "× reported"));
+          if (r.age) meta.appendChild(el("span", null, r.age));
+          d.appendChild(meta);
+          rs.appendChild(d);
+        });
+      } else if (p.reportTotal) {
+        // belongs to the Reports pane, not a pane of its own
+        s.appendChild(el("div", "note",
+          "Counts only — the source page listed " + n0(p.reportTotal) +
+          " reports for this ward but did not expand them. Four wards in the dataset carry itemised reports."));
+      }
+    }
+
+    // --- civic status
+    var c = section("Civic status");
+    kv(c, [
+      ["Civic pressure score", p.civicPressureScore],
+      ["Campaign readiness", p.campaignReadiness],
+      ["Property type", p.propertyType],
+      ["Zoning class", p.zoningClass],
+      ["Height band", p.heightBand],
+      ["Allowed height", p.allowedHeightM == null ? null : p.allowedHeightM + " m"],
+      ["Current avg height", p.currentAverageHeightM == null ? null : p.currentAverageHeightM + " m"],
+      ["Requested scenario", p.requestedScenarioHeightM == null ? null : p.requestedScenarioHeightM + " m"],
+      ["HAL clearance", p.halClearanceStatus],
+      ["Dump records linked", p.dumpRecordsLinked == null ? null : n0(p.dumpRecordsLinked)]
+    ]);
+    if (p.primaryConcerns && p.primaryConcerns.length) {
+      var ch = el("div", "chips");
+      ch.style.marginTop = "8px";
+      p.primaryConcerns.forEach(function (x) { ch.appendChild(el("span", "chip", x)); });
+      c.appendChild(ch);
+    }
+    if (p.recommendedNextAction) {
+      var na = el("div", "desc");
+      na.style.marginTop = "8px";
+      na.textContent = p.recommendedNextAction;
+      c.appendChild(na);
+    }
+
+    // --- people
+    var d = section("People & area");
+    kv(d, [
+      ["Population", n0(p.population)],
+      ["Male / Female", p.popMale ? n0(p.popMale) + " / " + n0(p.popFemale) : null],
+      ["SC / ST", p.popSC ? n0(p.popSC) + " / " + n0(p.popST) : null],
+      ["Area", n2(p.areaSqKm) + " sq km"],
+      ["Density", p.popDensity == null ? null : n0(p.popDensity) + " / sq km"],
+      ["Reservation", p.reservation]
+    ]);
+
+    // --- representation
+    var r = section("Representation");
+    // `representative` is the MLA under a different label and covers 350 wards
+    // to mlaName's 123, so it leads and the other is the fallback.
+    var mla = p.representative || p.mlaName;
+    [["MLA", mla, state.photos[mla]],
+     ["MP", p.mpName, state.photos[p.mpName]]].forEach(function (row) {
+      if (!row[1]) return;
+      r.appendChild(personCard(row[0], row[1], row[2]));
+    });
+    kv(r, [
+      ["Assembly", p.assembly],
+      ["Zone", p.zoneName],
+      ["RO division", p.roDivision]
+    ]);
+    if (!p.mpName) {
+      r.appendChild(el("div", "note",
+        "MP names come from the 243-ward list and match by ward name, so they " +
+        "cover part of the city only."));
+    }
+
+    // --- what's inside this ward
+    var st2 = state.points.stations.filter(function (x) { return x.wardKey === p.wardKey; });
+    var pr = state.points.projects.filter(function (x) { return x.wardKey === p.wardKey; });
+    if (st2.length || pr.length) {
+      var inw = section("In this ward");
+      st2.forEach(function (x) {
+        var b = el("div", "rep");
+        b.appendChild(el("div", "loc", x.name));
+        b.appendChild(el("div", "meta", x.lines.join(" + ") + " Line · " + x.status.replace(/_/g, " ")));
+        b.style.cursor = "pointer";
+        b.onclick = function () { showStation(x); };
+        inw.appendChild(b);
+      });
+      pr.forEach(function (x) {
+        var b = el("div", "rep");
+        b.appendChild(el("div", "loc", x.name));
+        b.appendChild(el("div", "meta", x.type.replace(/_/g, " ") + " · " + x.status.replace(/_/g, " ")));
+        b.style.cursor = "pointer";
+        b.onclick = function () { showProject(x); };
+        inw.appendChild(b);
+      });
+    }
+
+    finishPanel({
+      "Civic reports": "Reports",
+      "Civic status": "Status",
+      "People & area": "People",
+      "Representation": "Who",
+      "In this ward": "Nearby"
+    });
+  }
+
+  function newsList(parent, items) {
+    items.forEach(function (it) {
+      var d = el("div", "newsitem");
+      var href = safeHref(it.url);
+      var a = el(href ? "a" : "div", null, it.title || "(untitled)");
+      if (href) {
+        a.setAttribute("href", href);
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      }
+      d.appendChild(a);
+      var bits = [it.source, it.date].filter(Boolean).join(" · ");
+      if (bits) d.appendChild(el("div", "meta", bits));
+      parent.appendChild(d);
+    });
+  }
+
+  function showStation(s) {
+    state.selected = null;
+    restyleWards();
+    openPanel(s.name, s.lines.join(" + ") + " Line · metro station");
+    var i = section("Station");
+    kv(i, [
+      ["Lines", s.lines.join(", ")],
+      ["Status", s.status.replace(/_/g, " ")],
+      ["Opened / due", s.date],
+      ["Interchange", s.interchange ? "Yes" : "No"],
+      ["Ward", s.wardKey && state.byKey[s.wardKey] ? state.byKey[s.wardKey].properties.wardName : "Outside ward boundaries"]
+    ]);
+    if (s.note) i.appendChild(el("div", "note", s.note));
+    if (!s.wardKey) {
+      i.appendChild(el("div", "note",
+        "This station sits outside the 369-ward GBA layer — Electronic City, Bommasandra and the airport corridor are beyond its extent."));
+    }
+    if (s.wardKey && state.byKey[s.wardKey]) {
+      var b = el("button", null, "Open ward");
+      b.style.marginTop = "10px";
+      b.onclick = function () { selectWard(s.wardKey); };
+      i.appendChild(b);
+    }
+    if (s.news && s.news.length) newsList(section("News (" + s.news.length + ")"), s.news);
+    finishPanel({ "Station": "Details" });
+    map.setView([s.lat, s.lng], Math.max(map.getZoom(), 14));
+  }
+
+  function showProject(p) {
+    state.selected = null;
+    restyleWards();
+    openPanel(p.name, p.type.replace(/_/g, " ") + " · " + p.authority);
+    var i = section("Project");
+    kv(i, [
+      ["Status", p.status.replace(/_/g, " ")],
+      ["Authority", p.authority],
+      ["Length", p.lengthKm == null ? null : p.lengthKm + " km"],
+      ["Cost", p.costCrore == null ? null : "₹" + n0(p.costCrore) + " crore"],
+      ["Expected completion", p.expectedCompletion],
+      ["Ward", p.wardKey && state.byKey[p.wardKey] ? state.byKey[p.wardKey].properties.wardName : "Outside ward boundaries"]
+    ]);
+    if (p.description) {
+      var d = el("div", "desc");
+      d.style.marginTop = "8px";
+      d.textContent = p.description;
+      i.appendChild(d);
+    }
+    if (p.news && p.news.length) newsList(section("News (" + p.news.length + ")"), p.news);
+    finishPanel({ "Project": "Details" });
+    var anchor = p.point || p.path[0];
+    map.setView(anchor, Math.max(map.getZoom(), 13));
+  }
+
+  document.getElementById("p-close").onclick = function () {
+    panel.hidden = true;
+    state.selected = null;
+    restyleWards();
+  };
+
+  // ---- table view --------------------------------------------------------
+  var TABLE_COLS = [
+    { k: "wardName", t: "Ward", f: function (v) { return v; } },
+    { k: "corporation", t: "Corp", f: function (v) { return v; } },
+    { k: "wardId", t: "#", f: n0 },
+    { k: "reportTotal", t: "Reports", f: n0 },
+    { k: "reportUnresolved", t: "Unres.", f: n0 },
+    { k: "reportDensity", t: "/ sq km", f: n1 },
+    { k: "reportsPer1000", t: "/ 1k ppl", f: n2 },
+    { k: "civicPressureScore", t: "Pressure", f: n0 },
+    { k: "population", t: "Population", f: n0 },
+    { k: "popDensity", t: "Density", f: n0 },
+    { k: "areaSqKm", t: "Area km²", f: n2 }
+  ];
+
+  function renderTable() {
+    var wrap = document.getElementById("tablewrap");
+    wrap.textContent = "";
+    var t = el("table");
+    var cap = el("caption",
+      null,
+      "All 369 GBA wards. Every value shaded on the map is readable here — click a column to sort.");
+    t.appendChild(cap);
+
+    var thead = el("thead"), htr = el("tr");
+    TABLE_COLS.forEach(function (c) {
+      var th = el("th", null, c.t +
+        (state.tableSort.col === c.k ? (state.tableSort.dir < 0 ? " ↓" : " ↑") : ""));
+      th.setAttribute("scope", "col");
+      th.onclick = function () {
+        if (state.tableSort.col === c.k) state.tableSort.dir *= -1;
+        else state.tableSort = { col: c.k, dir: -1 };
+        renderTable();
+      };
+      htr.appendChild(th);
+    });
+    thead.appendChild(htr);
+    t.appendChild(thead);
+
+    var rows = state.wards.features.slice();
+    var sc = state.tableSort.col, sd = state.tableSort.dir;
+    rows.sort(function (a, b) {
+      var x = a.properties[sc], y = b.properties[sc];
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
+      if (typeof x === "string") return sd * x.localeCompare(y);
+      return sd * (x - y);
+    });
+
+    var tb = el("tbody");
+    rows.forEach(function (f) {
+      var p = f.properties, tr = el("tr");
+      tr.style.cursor = "pointer";
+      tr.onclick = function () {
+        document.getElementById("btn-table").click();
+        selectWard(p.wardKey);
+      };
+      TABLE_COLS.forEach(function (c) {
+        tr.appendChild(el("td", null, p[c.k] == null ? "—" : c.f(p[c.k])));
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    wrap.appendChild(t);
+  }
+
+  document.getElementById("btn-table").onclick = function () {
+    var wrap = document.getElementById("tablewrap");
+    var showing = wrap.hidden;
+    wrap.hidden = !showing;
+    this.setAttribute("aria-pressed", String(showing));
+    this.textContent = showing ? "Map view" : "Table view";
+    if (showing) renderTable();
+  };
+
+  // ---- controls -----------------------------------------------------------
+  document.getElementById("metric").onchange = function () {
+    state.metric = this.value;
+    if (state.metric !== "none") {
+      state.bins = computeBins(
+        state.wards.features.map(function (f) { return f.properties[state.metric]; }), 6);
+    }
+    restyleWards();
+    renderLegend();
+  };
+
+  document.getElementById("t-stations").onchange = function () {
+    if (this.checked) stationLayer.addTo(map); else map.removeLayer(stationLayer);
+    renderLegend();
+  };
+  document.getElementById("t-infra").onchange = function () {
+    if (this.checked) infraLayer.addTo(map); else map.removeLayer(infraLayer);
+    renderLegend();
+  };
+
+  document.getElementById("q").addEventListener("change", function () {
+    var v = this.value.trim().toLowerCase();
+    if (!v) return;
+    var hit = state.wards.features.filter(function (f) {
+      return f.properties.wardName.toLowerCase() === v;
+    })[0] || state.wards.features.filter(function (f) {
+      return f.properties.wardName.toLowerCase().indexOf(v) >= 0;
+    })[0];
+    if (hit) selectWard(hit.properties.wardKey);
+  });
+
+  document.getElementById("btn-theme").onclick = function () {
+    var cur = document.documentElement.getAttribute("data-theme");
+    var next = cur === "dark" ? "light" : (cur === "light" ? "dark" :
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark"));
+    document.documentElement.setAttribute("data-theme", next);
+    restyleWards();
+    renderLegend();
+    if (!document.getElementById("tablewrap").hidden) renderTable();
+  };
+
+  map.on("click", function (e) {
+    if (e.originalEvent && e.originalEvent.target && e.originalEvent.target.closest &&
+        e.originalEvent.target.closest(".panel")) return;
+  });
+
+  // ---- boot ---------------------------------------------------------------
+  function fail(msg) {
+    var l = document.getElementById("loading");
+    l.hidden = false;
+    l.textContent = "";
+    l.appendChild(el("div", "err", msg));
+  }
+
+  // Data comes from Supabase when web/config.js supplies credentials, and from
+  // the generated files otherwise, so the map still works offline. The two
+  // RPCs return exactly the shape the files have, so nothing downstream cares
+  // which one answered.
+  var CFG = window.SUPABASE_CONFIG || null;
+
+  function fromSupabase(fn, body) {
+    return fetch(CFG.url.replace(/\/$/, "") + "/rest/v1/rpc/" + fn, {
+      method: "POST",
+      headers: {
+        "apikey": CFG.key,
+        "Authorization": "Bearer " + CFG.key,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body || {})
+    }).then(function (r) {
+      if (!r.ok) {
+        return r.text().then(function (t) {
+          throw new Error("rpc " + fn + " " + r.status + " " + t.slice(0, 200));
+        });
+      }
+      return r.json();
+    });
+  }
+
+  function fromFile(path) {
+    return fetch("../output/" + path).then(function (r) {
+      if (!r.ok) throw new Error(path + " " + r.status);
+      return r.json();
+    });
+  }
+
+  var photos = fetch("mla-photos.json")
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .catch(function () { return {}; });
+
+  var load = CFG
+    ? Promise.all([fromSupabase("wards_geojson"), fromSupabase("points_json"), photos])
+    : Promise.all([fromFile("wards.geojson"), fromFile("points.json"), photos]);
+
+  document.getElementById("loading").textContent =
+    CFG ? "Loading ward data from Supabase…" : "Loading ward data…";
+
+  load.then(function (res) {
+    state.wards = res[0];
+    state.points = res[1];
+    state.photos = res[2] || {};
+
+    state.bins = computeBins(
+      state.wards.features.map(function (f) { return f.properties[state.metric]; }), 6);
+
+    buildWardLayer();
+    wardLayer.eachLayer(function (l) {
+      var k = l.feature.properties.wardKey;
+      state.byKey[k] = { properties: l.feature.properties, layer: l };
+    });
+    buildStationLayer();
+    buildInfraLayer();
+    renderLegend();
+
+    var dl = document.getElementById("wardnames");
+    state.wards.features.slice()
+      .sort(function (a, b) { return a.properties.wardName.localeCompare(b.properties.wardName); })
+      .forEach(function (f) {
+        var o = document.createElement("option");
+        o.value = f.properties.wardName;
+        dl.appendChild(o);
+      });
+
+    document.getElementById("loading").hidden = true;
+
+    // Deep link: ?ward=5:25 opens that ward, ?metric=… preselects the shading,
+    // ?theme=light|dark pins the theme. Exposed so a link in a chat answer can
+    // drive the map without reloading the page.
+    function applyParams(qs) {
+      if (qs.get("metric") && (METRICS[qs.get("metric")] || qs.get("metric") === "none")) {
+        document.getElementById("metric").value = qs.get("metric");
+        document.getElementById("metric").onchange();
+      }
+      if (qs.get("ward") && state.byKey[qs.get("ward")]) selectWard(qs.get("ward"));
+      if (qs.get("station")) {
+        var hs = state.points.stations.filter(function (x) { return x.id === qs.get("station"); })[0];
+        if (hs) showStation(hs);
+      }
+      if (qs.get("project")) {
+        var hp = state.points.projects.filter(function (x) { return x.id === qs.get("project"); })[0];
+        if (hp) showProject(hp);
+      }
+      if (qs.get("view") === "table" && document.getElementById("tablewrap").hidden) {
+        document.getElementById("btn-table").click();
+      }
+    }
+    window.applyMapParams = applyParams;
+    applyParams(new URLSearchParams(location.search));
+  }).catch(function (e) {
+    fail("Could not load map data (" + e.message + "). " + (CFG
+      ? "Reading from Supabase — check that web/config.js has a valid publishable key " +
+        "and that migrations/002_ward_atlas.sql has been run and loaded."
+      : "Run parsers/build_map_data.py, then serve BitNBuild over HTTP — for example: " +
+        "python -m http.server 8000 — and open http://localhost:8000/web/map.html. " +
+        "Serving web/ alone will not work, because the page reads ../output/. Nor will " +
+        "opening the file with file://, because the browser blocks fetch() from local files."));
+  });
+})();
+</script>
+<script src="chat.js"></script>
+</body>
+</html>

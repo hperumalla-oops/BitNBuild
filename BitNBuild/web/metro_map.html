@@ -2002,7 +2002,7 @@ searchEl.addEventListener('keydown', (e) => {
 });
 
 // Try to load parser output if served over http(s)
-fetch('news.json').then(r => r.ok ? r.json() : null).then(d => { if (d) window.METRO_NEWS = d; }).catch(()=>{});
+fetch('../output/news.json').then(r => r.ok ? r.json() : null).then(d => { if (d) window.METRO_NEWS = d; }).catch(()=>{});
 </script>
 </body>
 </html>

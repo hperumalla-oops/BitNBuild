@@ -1,0 +1,8 @@
+# Vercel builds on Linux. A shell script checked out with CRLF fails there with
+# "\r: command not found", so pin line endings for anything executed.
+* text=auto eol=lf
+*.sh    text eol=lf
+*.py    text eol=lf
+*.json  text eol=lf
+*.png   binary
+*.zip   binary

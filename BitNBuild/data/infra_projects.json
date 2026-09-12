@@ -1,0 +1,434 @@
+{
+  "generated": "2026-09-12",
+  "source_notes": "Compiled from Deccan Herald, OpenCity, TheFederal and related public reporting on Bengaluru road infrastructure (BBMP/GBA/BDA/BSMILE/NHAI projects), Sept 2026. Corridor paths are approximate route sketches through named junctions, not survey-grade alignments \u2014 DPRs for several BSMILE corridors are not yet public in full.",
+  "legend": {
+    "flyover": "Elevated road bridge over a junction/stretch",
+    "underpass": "Road passing below a junction/rail line",
+    "elevated_corridor": "Longer multi-km elevated flyover corridor",
+    "tunnel_road": "Underground road tunnel",
+    "grade_separator": "Flyover or underpass separating conflicting traffic at a junction",
+    "ring_road": "Circumferential expressway around the city"
+  },
+  "projects": [
+    {
+      "id": "tunnel_road_hebbal_silkboard",
+      "name": "Bengaluru Tunnel Road Project (Hebbal\u2013Silk Board)",
+      "type": "tunnel_road",
+      "authority": "BBMP/GBA",
+      "status": "planned",
+      "length_km": 16.75,
+      "cost_crore": 26000,
+      "expected_completion": "DPR stage; under legal challenge (Karnataka HC PIL, Oct 2025)",
+      "description": "Twin-tube underground road tunnel linking Hebbal to Central Silk Board, running beneath central Bengaluru including under Lalbagh Botanical Garden (~700m stretch, 6 acres of land needed inside the garden for a TBM shaft). Ramp planned near Ashoka Pillar and an exit near Marigowda Junction, Siddapura Road. Contested over environmental impact on Lalbagh's rock formation and lake.",
+      "point": null,
+      "path": [
+        [
+          13.0358,
+          77.597
+        ],
+        [
+          12.982,
+          77.594
+        ],
+        [
+          12.964,
+          77.589
+        ],
+        [
+          12.9507,
+          77.5848
+        ],
+        [
+          12.942,
+          77.59
+        ],
+        [
+          12.9172,
+          77.6228
+        ]
+      ]
+    },
+    {
+      "id": "indiranagar_100ft_road_elevated_corridor",
+      "name": "SV Road Metro\u2013Silk Board Elevated Corridor (via 100 Feet Road, Indiranagar)",
+      "type": "elevated_corridor",
+      "authority": "BSMILE",
+      "status": "approved",
+      "length_km": 11.62,
+      "cost_crore": 1300,
+      "expected_completion": "Approved by state govt; facing resident backlash over tree loss, land takeover not fully consulted (as of mid-2026)",
+      "description": "11.62 km elevated flyover from Swami Vivekananda Road Metro Station (Old Madras Road) through Indiranagar's 80 Feet Road, CMH Road and the tree-lined 100 Feet Road, continuing to Madiwala and on to Silk Board Junction on Hosur Road.",
+      "point": null,
+      "path": [
+        [
+          12.98595,
+          77.64493
+        ],
+        [
+          12.977,
+          77.641
+        ],
+        [
+          12.97,
+          77.6395
+        ],
+        [
+          12.955,
+          77.635
+        ],
+        [
+          12.93,
+          77.628
+        ],
+        [
+          12.9172,
+          77.6228
+        ]
+      ]
+    },
+    {
+      "id": "ejipura_flyover",
+      "name": "Ejipura Flyover",
+      "type": "flyover",
+      "authority": "BBMP",
+      "status": "under_construction",
+      "length_km": 2.38,
+      "cost_crore": 210,
+      "expected_completion": "Deadline pushed to March 2026; 437 of 762 precast segments installed as of late 2025",
+      "description": "Long-delayed flyover on Hosur Road near Ejipura/Koramangala meant to help commuters skip several junctions between Madiwala underpass and the Bosch/MICO office. Originally awarded 2017, stalled mid-construction, reassigned to a new contractor. Needs 2 land parcels near St John's Hospital for ramp construction.",
+      "point": [
+        12.9418,
+        77.6389
+      ],
+      "path": null
+    },
+    {
+      "id": "nagavara_bagalur_flyover",
+      "name": "Nagavara Junction\u2013Bagalur Main Road Flyover (via R K Hegde Nagar)",
+      "type": "elevated_corridor",
+      "authority": "BSMILE",
+      "status": "dpr_stage",
+      "length_km": 17.94,
+      "cost_crore": null,
+      "expected_completion": "DPR finalised, tender out for third-party DPR proof-check (2026)",
+      "description": "Proposed elevated flyover connecting Nagavara Junction to Bagalur Main Road via R K Hegde Nagar, part of BSMILE's 13-corridor, 126 km package.",
+      "point": null,
+      "path": [
+        [
+          13.0405,
+          77.6247
+        ],
+        [
+          13.062,
+          77.618
+        ],
+        [
+          13.09,
+          77.622
+        ],
+        [
+          13.12,
+          77.628
+        ]
+      ]
+    },
+    {
+      "id": "ulsoor_bagalur_elevated_corridor",
+      "name": "Mother Teresa Circle (Ulsoor Lake)\u2013Bagalur Village Elevated Corridor (via Assaye Road)",
+      "type": "elevated_corridor",
+      "authority": "BSMILE",
+      "status": "dpr_stage",
+      "length_km": 27.19,
+      "cost_crore": null,
+      "expected_completion": "DPR finalised, tender out for third-party DPR proof-check (2026)",
+      "description": "27.19 km elevated corridor running from Mother Teresa Circle at Ulsoor Lake Junction, via Assaye Road, up to Bagalur Village on New Airport Road \u2014 one of BSMILE's 13 proposed elevated corridors.",
+      "point": null,
+      "path": [
+        [
+          12.9815,
+          77.622
+        ],
+        [
+          13.01,
+          77.628
+        ],
+        [
+          13.06,
+          77.635
+        ],
+        [
+          13.11,
+          77.642
+        ],
+        [
+          13.145,
+          77.64
+        ]
+      ]
+    },
+    {
+      "id": "old_madras_rd_ec_flyover",
+      "name": "Old Madras Road\u2013Electronic City Flyover (via SV Road Metro, Indiranagar)",
+      "type": "elevated_corridor",
+      "authority": "BSMILE",
+      "status": "dpr_stage",
+      "length_km": 10.81,
+      "cost_crore": null,
+      "expected_completion": "DPR finalised, tender out for third-party DPR proof-check (2026)",
+      "description": "10.81 km flyover proposed from Old Madras Road to the existing Electronic City flyover, routed via Swami Vivekananda Road Metro Station, Indiranagar \u2014 overlaps in part with the 100 Feet Road elevated corridor proposal.",
+      "point": null,
+      "path": [
+        [
+          12.9908,
+          77.6525
+        ],
+        [
+          12.98595,
+          77.64493
+        ],
+        [
+          12.96,
+          77.635
+        ],
+        [
+          12.9172,
+          77.6228
+        ],
+        [
+          12.88,
+          77.625
+        ],
+        [
+          12.8465,
+          77.6711
+        ]
+      ]
+    },
+    {
+      "id": "sirsi_nayandahalli_corridor",
+      "name": "Sirsi Circle\u2013Nayandahalli Elevated Corridor (Mysuru Road)",
+      "type": "elevated_corridor",
+      "authority": "BSMILE",
+      "status": "dpr_stage",
+      "length_km": 5.22,
+      "cost_crore": null,
+      "expected_completion": "DPR finalised, tender out for third-party DPR proof-check (2026)",
+      "description": "5.22 km elevated corridor along Mysuru Road connecting Sirsi Circle to Nayandahalli.",
+      "point": null,
+      "path": [
+        [
+          12.9689,
+          77.5735
+        ],
+        [
+          12.956,
+          77.548
+        ],
+        [
+          12.9425,
+          77.5256
+        ]
+      ]
+    },
+    {
+      "id": "ragigudda_kanakapura_corridor",
+      "name": "Marenahalli (Ragigudda Junction)\u2013Kanakapura Main Road Elevated Corridor",
+      "type": "elevated_corridor",
+      "authority": "BSMILE",
+      "status": "dpr_stage",
+      "length_km": 18.47,
+      "cost_crore": null,
+      "expected_completion": "DPR finalised, tender out for third-party DPR proof-check (2026)",
+      "description": "18.47 km elevated corridor from Marenahalli Main Road at Ragigudda Junction to Kanakapura Main Road, running along the BWSSB Pipeline Road.",
+      "point": null,
+      "path": [
+        [
+          12.9169,
+          77.5904
+        ],
+        [
+          12.9,
+          77.57
+        ],
+        [
+          12.885,
+          77.55
+        ],
+        [
+          12.87,
+          77.53
+        ]
+      ]
+    },
+    {
+      "id": "ullal_main_road_grade_separator",
+      "name": "Ullal Main Road Grade Separator (RR Nagar\u2013Kengeri ORR)",
+      "type": "grade_separator",
+      "authority": "GBA/BBMP",
+      "status": "under_construction",
+      "length_km": null,
+      "cost_crore": null,
+      "expected_completion": "Started Nov 2020; incomplete as of 2026, GBA now targets 2026",
+      "description": "Grade separator across Ullal Main Road on the RR Nagar\u2013Kengeri stretch of the Outer Ring Road; one of Bengaluru's most delayed road projects.",
+      "point": [
+        12.949,
+        77.509
+      ],
+      "path": null
+    },
+    {
+      "id": "hmt_road_pipeline_junction_separator",
+      "name": "HMT Road Pipeline Junction Grade Separator (RR Nagar\u2013Kengeri ORR)",
+      "type": "grade_separator",
+      "authority": "GBA/BBMP",
+      "status": "under_construction",
+      "length_km": null,
+      "cost_crore": null,
+      "expected_completion": "Started Nov 2020; incomplete as of 2026, GBA now targets 2026",
+      "description": "Grade separator at the HMT Road pipeline junction on the RR Nagar\u2013Kengeri Outer Ring Road stretch.",
+      "point": [
+        12.955,
+        77.502
+      ],
+      "path": null
+    },
+    {
+      "id": "jalahalli_circle_separator",
+      "name": "Jalahalli Circle Grade Separator",
+      "type": "grade_separator",
+      "authority": "GBA/BBMP",
+      "status": "planned",
+      "length_km": null,
+      "cost_crore": null,
+      "expected_completion": "Announced 2019; work not started \u2014 stalled by land acquisition",
+      "description": "Proposed grade separator at Jalahalli Circle; yet to break ground due to unresolved land acquisition.",
+      "point": [
+        13.045,
+        77.55
+      ],
+      "path": null
+    },
+    {
+      "id": "annapoorneshwari_nagar_separator",
+      "name": "Annapoorneshwari Nagar Grade Separator (Kengeri ORR)",
+      "type": "grade_separator",
+      "authority": "GBA/BBMP",
+      "status": "under_construction",
+      "length_km": null,
+      "cost_crore": null,
+      "expected_completion": "Announced 2022; stalled since due to a cost overrun of ~Rs 1.5 crore, revised estimate approved recently",
+      "description": "Grade separator across Annapoorneshwari Nagar on the Kengeri stretch of the Outer Ring Road.",
+      "point": [
+        12.921,
+        77.499
+      ],
+      "path": null
+    },
+    {
+      "id": "hebbal_junction_underpass",
+      "name": "Hebbal Junction Underpass",
+      "type": "underpass",
+      "authority": "BDA",
+      "status": "under_construction",
+      "length_km": null,
+      "cost_crore": null,
+      "expected_completion": "Approved and started 2026; ~1 year construction timeline",
+      "description": "BDA underpass at Hebbal Junction giving direct access along the Outer Ring Road between KR Puram and Tumakuru Road, alongside an ongoing elevated ramp project from KR Puram to the city centre.",
+      "point": [
+        13.0443,
+        77.5927
+      ],
+      "path": null
+    },
+    {
+      "id": "sadahalli_underpass",
+      "name": "Sadahalli Underpass (Airport Road)",
+      "type": "underpass",
+      "authority": "NHAI",
+      "status": "planned",
+      "length_km": null,
+      "cost_crore": null,
+      "expected_completion": "Work to begin ~January 2026",
+      "description": "Six-lane underpass on NH44 Airport Road about 500m from Sadahalli toll plaza, roughly 6m below road level, removing the last signal for airport-bound traffic. Built cut-and-cover; four temporary service lanes added on each side during construction.",
+      "point": [
+        13.235,
+        77.665
+      ],
+      "path": null
+    },
+    {
+      "id": "hennur_road_flyover",
+      "name": "Hennur Main Road Flyover (Nagawara\u2013Kalyan Nagar)",
+      "type": "flyover",
+      "authority": "BDA",
+      "status": "under_construction",
+      "length_km": null,
+      "cost_crore": 54.64,
+      "expected_completion": "Long pending since 2012 due to land acquisition near Lingarajapuram; underpass portion (Nagawara\u2013Kalyan Nagar) already complete",
+      "description": "Flyover on Hennur Main Road widened from 2 to 4 lanes and extended by 600m after resolving land acquisition (39.13 guntas, ~Rs 62 crore paid to landowners) and relocating a temple in Kacharakanahalli.",
+      "point": [
+        13.03,
+        77.635
+      ],
+      "path": null
+    },
+    {
+      "id": "peripheral_ring_road",
+      "name": "Peripheral Ring Road / Bengaluru Business Corridor",
+      "type": "ring_road",
+      "authority": "BDA",
+      "status": "approved",
+      "length_km": 73,
+      "cost_crore": null,
+      "expected_completion": "PPP-DBFOT model; target delivery 2027",
+      "description": "73 km, 8-lane access-controlled expressway ringing outer Bengaluru from Tumkur Road (northwest) to Hosur Road (south) via Hessarghatta, Doddaballapur Road, Old Madras Road and Sarjapur Road. Includes 16 flyovers, 10 overpasses, 12 underpasses and bridges over 7 water bodies including Gunjur Lake. Meant to divert heavy commercial traffic off the Outer Ring Road.",
+      "point": null,
+      "path": [
+        [
+          13.045,
+          77.46
+        ],
+        [
+          13.12,
+          77.495
+        ],
+        [
+          13.16,
+          77.59
+        ],
+        [
+          13.145,
+          77.69
+        ],
+        [
+          13.05,
+          77.745
+        ],
+        [
+          12.92,
+          77.75
+        ],
+        [
+          12.82,
+          77.69
+        ],
+        [
+          12.81,
+          77.63
+        ],
+        [
+          12.865,
+          77.59
+        ],
+        [
+          12.93,
+          77.51
+        ],
+        [
+          13.045,
+          77.46
+        ]
+      ]
+    }
+  ]
+}

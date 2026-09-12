@@ -1,0 +1,1460 @@
+[
+  {
+    "ward_name": "Kempegowda Ward",
+    "ward_number": 1,
+    "MP_name": "Dr. K. Sudhakar",
+    "MLA_name": "S. R. Vishwanath"
+  },
+  {
+    "ward_name": "Chowdeswari Ward",
+    "ward_number": 2,
+    "MP_name": "Dr. K. Sudhakar",
+    "MLA_name": "S. R. Vishwanath"
+  },
+  {
+    "ward_name": "Someshwara Ward",
+    "ward_number": 3,
+    "MP_name": "Dr. K. Sudhakar",
+    "MLA_name": "S. R. Vishwanath"
+  },
+  {
+    "ward_name": "Atturu Layout",
+    "ward_number": 4,
+    "MP_name": "Dr. K. Sudhakar",
+    "MLA_name": "S. R. Vishwanath"
+  },
+  {
+    "ward_name": "Yelahanka Satellite Town",
+    "ward_number": 5,
+    "MP_name": "Dr. K. Sudhakar",
+    "MLA_name": "S. R. Vishwanath"
+  },
+  {
+    "ward_name": "Kogilu",
+    "ward_number": 6,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Thanisandra",
+    "ward_number": 7,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Jakkuru",
+    "ward_number": 8,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Amrutahalli",
+    "ward_number": 9,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Kempapura",
+    "ward_number": 10,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Byatarayanapura",
+    "ward_number": 11,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Kodigehalli",
+    "ward_number": 12,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Dodda Bommasandra",
+    "ward_number": 13,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Vidyaranyapura",
+    "ward_number": 14,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Kuvempunagar",
+    "ward_number": 15,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Krishna Byregowda"
+  },
+  {
+    "ward_name": "Kammagondanahalli",
+    "ward_number": 16,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Shettihalli",
+    "ward_number": 17,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Bagalakunte",
+    "ward_number": 18,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Defence Colony",
+    "ward_number": 19,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Mallasandra",
+    "ward_number": 20,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "T Dasarahalli",
+    "ward_number": 21,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Chokkasandra",
+    "ward_number": 22,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Nelagadderanahalli",
+    "ward_number": 23,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Rajagopal Nagar",
+    "ward_number": 24,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Rajeshwari Nagar",
+    "ward_number": 25,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Hegganahalli",
+    "ward_number": 26,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Sunkadakatte",
+    "ward_number": 27,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. Muniraju"
+  },
+  {
+    "ward_name": "Dodda Bidarakallu",
+    "ward_number": 28,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Vidyamanyanagar",
+    "ward_number": 29,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Herohalli",
+    "ward_number": 30,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Doddagollarahatti",
+    "ward_number": 31,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Ullal",
+    "ward_number": 32,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Kengeri",
+    "ward_number": 33,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Bande Mutt",
+    "ward_number": 34,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Hemmigepura",
+    "ward_number": 35,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "S. T. Somashekar"
+  },
+  {
+    "ward_name": "Chatrapati Shivaji",
+    "ward_number": 36,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Chanakya",
+    "ward_number": 37,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "J P Park",
+    "ward_number": 38,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Kanneshwara",
+    "ward_number": 39,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Veeramadakari",
+    "ward_number": 40,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Peenya",
+    "ward_number": 41,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Lakshmi Devi Nagar",
+    "ward_number": 42,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Ranadheera Kanteerava",
+    "ward_number": 43,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Veera Sindhura Lakshamana",
+    "ward_number": 44,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Vijayanagara Krishnadevaraya",
+    "ward_number": 45,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Sir M Vishweshwaraiah",
+    "ward_number": 46,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Nalvadi Krishnaraja Wadior Park",
+    "ward_number": 47,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Jnana Bharathi",
+    "ward_number": 48,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Rajarajeshwari Nagar",
+    "ward_number": 49,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "Munirathna"
+  },
+  {
+    "ward_name": "Marappana Palya",
+    "ward_number": 50,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Nagapura",
+    "ward_number": 51,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Mahalakshimpuram",
+    "ward_number": 52,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Nandini Layout",
+    "ward_number": 53,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Jai Maruthinagara",
+    "ward_number": 54,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Puneet Rajkumar",
+    "ward_number": 55,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Shankar Matt",
+    "ward_number": 56,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Shakthi Ganapathi Nagar",
+    "ward_number": 57,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Vrisabhavathi Nagar",
+    "ward_number": 58,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "K. Gopalaiah"
+  },
+  {
+    "ward_name": "Mattikere",
+    "ward_number": 59,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Aramane Nagara",
+    "ward_number": 60,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Malleswaram",
+    "ward_number": 61,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Subramanya Nagar",
+    "ward_number": 62,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Gayithri Nagar",
+    "ward_number": 63,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Kadu Malleshwara",
+    "ward_number": 64,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Rajamahal Guttahalli",
+    "ward_number": 65,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "Dr. C. N. Ashwathnarayan"
+  },
+  {
+    "ward_name": "Radhakrishna Temple Ward",
+    "ward_number": 66,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Sanjaya Nagar",
+    "ward_number": 67,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Vishwanath Nagenahalli",
+    "ward_number": 68,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Manorayanapalya",
+    "ward_number": 69,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Hebbala",
+    "ward_number": 70,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Chamundi Nagara",
+    "ward_number": 71,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Ganga Nagar",
+    "ward_number": 72,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Jayachamarajendra Nagar",
+    "ward_number": 73,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. S. Suresha"
+  },
+  {
+    "ward_name": "Kaval Bairasandra",
+    "ward_number": 74,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "Kushal Nagar",
+    "ward_number": 75,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "Muneshwara Nagar",
+    "ward_number": 76,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "Devara Jeevanahalli",
+    "ward_number": 77,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "S K Garden",
+    "ward_number": 78,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "Sagayarapuram",
+    "ward_number": 79,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "Pulikeshinagar",
+    "ward_number": 80,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "A. C. Srinivasa"
+  },
+  {
+    "ward_name": "Horamavu",
+    "ward_number": 81,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Babusab Palya",
+    "ward_number": 82,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Kalkere",
+    "ward_number": 83,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Ramamurthy Nagara",
+    "ward_number": 84,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Vijinapura",
+    "ward_number": 85,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "K R Puram",
+    "ward_number": 86,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Medahalli",
+    "ward_number": 87,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Basavanapura",
+    "ward_number": 88,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Devasandra",
+    "ward_number": 89,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Mahadevapura",
+    "ward_number": 90,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "A Narayanapura",
+    "ward_number": 91,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Vijnana Nagar",
+    "ward_number": 92,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "HAL Airport",
+    "ward_number": 93,
+    "MP_name": "Shobha Karandlaje",
+    "MLA_name": "B. A. Basavaraja"
+  },
+  {
+    "ward_name": "Hennur",
+    "ward_number": 94,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Nagavara",
+    "ward_number": 95,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Kadugondanahalli",
+    "ward_number": 96,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Venkateshpura",
+    "ward_number": 97,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Kacharkanahalli",
+    "ward_number": 98,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "HRBR Layout",
+    "ward_number": 99,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Banasavadi",
+    "ward_number": 100,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Kammanahalli",
+    "ward_number": 101,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Lingarajapura",
+    "ward_number": 102,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Maruthi Seva Nagar",
+    "ward_number": 103,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "K. J. George"
+  },
+  {
+    "ward_name": "Kadugodi",
+    "ward_number": 104,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Belathur",
+    "ward_number": 105,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Hudi",
+    "ward_number": 106,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Garudachar Playa",
+    "ward_number": 107,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "DoddaNekkundi",
+    "ward_number": 108,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "AECS Layout",
+    "ward_number": 109,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Whitefield",
+    "ward_number": 110,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Hagadur",
+    "ward_number": 111,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Varthuru",
+    "ward_number": 112,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Munnekollala",
+    "ward_number": 113,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Marathahalli",
+    "ward_number": 114,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Bellanduru",
+    "ward_number": 115,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "Doddakanahalli",
+    "ward_number": 116,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Manjula S."
+  },
+  {
+    "ward_name": "C V Raman Nagar",
+    "ward_number": 117,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Lal Bahadur Nagar",
+    "ward_number": 118,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "New Bayappanahalli",
+    "ward_number": 119,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Hoysala Nagar",
+    "ward_number": 120,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Old Thippasandra",
+    "ward_number": 121,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "New Thippasandra",
+    "ward_number": 122,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Jalakanteshwara Nagara",
+    "ward_number": 123,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Jeevanbhima Nagar",
+    "ward_number": 124,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Konena Agrahara",
+    "ward_number": 125,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Raghu"
+  },
+  {
+    "ward_name": "Ramaswamy Palya",
+    "ward_number": 126,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Rizwan Arshad"
+  },
+  {
+    "ward_name": "Jayamahal",
+    "ward_number": 127,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Rizwan Arshad"
+  },
+  {
+    "ward_name": "Vasanth Nagar",
+    "ward_number": 128,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Rizwan Arshad"
+  },
+  {
+    "ward_name": "Sampangiram Nagar",
+    "ward_number": 129,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Rizwan Arshad"
+  },
+  {
+    "ward_name": "Bharathi Nagar",
+    "ward_number": 130,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Rizwan Arshad"
+  },
+  {
+    "ward_name": "Ulsoor",
+    "ward_number": 131,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Rizwan Arshad"
+  },
+  {
+    "ward_name": "Dattatreya Temple",
+    "ward_number": 132,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Gandhinagar",
+    "ward_number": 133,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Subhash Nagar",
+    "ward_number": 134,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Okalipuram",
+    "ward_number": 135,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Binnipete",
+    "ward_number": 136,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Cottonpete",
+    "ward_number": 137,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Chickpete",
+    "ward_number": 138,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "Dinesh Gundu Rao"
+  },
+  {
+    "ward_name": "Dayananda Nagar",
+    "ward_number": 139,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Prakash Nagar",
+    "ward_number": 140,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Rajaji Nagar",
+    "ward_number": 141,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Sriramamandir",
+    "ward_number": 142,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Shivanagara",
+    "ward_number": 143,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Basaveshwara Nagar",
+    "ward_number": 144,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Kamakshipalya",
+    "ward_number": 145,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "S. Suresh Kumar"
+  },
+  {
+    "ward_name": "Dr. Raj Kumar Ward",
+    "ward_number": 146,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Agrahara Dasarahalli",
+    "ward_number": 147,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Govindaraja Nagar",
+    "ward_number": 148,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Kaveripura",
+    "ward_number": 149,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Marenahalli",
+    "ward_number": 150,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Maruthi Mandir Ward",
+    "ward_number": 151,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Mudalapalya",
+    "ward_number": 152,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Nagarabhavi",
+    "ward_number": 153,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Chandra Layout",
+    "ward_number": 154,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Nayandahalli",
+    "ward_number": 155,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Priya Krishna"
+  },
+  {
+    "ward_name": "Kempapura Agrahara",
+    "ward_number": 156,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Vijayanagar",
+    "ward_number": 157,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Hosahalli",
+    "ward_number": 158,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Hampi Nagar",
+    "ward_number": 159,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Bapuji Nagar",
+    "ward_number": 160,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Attiguppe",
+    "ward_number": 161,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Gali Anjenaya Temple Ward",
+    "ward_number": 162,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Veerabhadranagar",
+    "ward_number": 163,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Avalahalli",
+    "ward_number": 164,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Chamrajapet",
+    "ward_number": 165,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "B. Z. Zameer Ahmed Khan"
+  },
+  {
+    "ward_name": "Chalavadipalya",
+    "ward_number": 166,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "B. Z. Zameer Ahmed Khan"
+  },
+  {
+    "ward_name": "Jagajivanaram Nagar",
+    "ward_number": 167,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "B. Z. Zameer Ahmed Khan"
+  },
+  {
+    "ward_name": "Padarayanapura",
+    "ward_number": 168,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "B. Z. Zameer Ahmed Khan"
+  },
+  {
+    "ward_name": "Devaraj Urs Nagar",
+    "ward_number": 169,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "B. Z. Zameer Ahmed Khan"
+  },
+  {
+    "ward_name": "Azad Nagar",
+    "ward_number": 170,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "B. Z. Zameer Ahmed Khan"
+  },
+  {
+    "ward_name": "Sudham Nagara",
+    "ward_number": 171,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Dharmaraya Swamy Temple Ward",
+    "ward_number": 172,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Sunkenahalli",
+    "ward_number": 173,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Vishveshwara Puram",
+    "ward_number": 174,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Ashoka Pillar",
+    "ward_number": 175,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Someshwara Nagar",
+    "ward_number": 176,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Hombegowda Nagara",
+    "ward_number": 177,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Uday B. Garudachar"
+  },
+  {
+    "ward_name": "Domlur",
+    "ward_number": 178,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Jogupalya",
+    "ward_number": 179,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Agaram",
+    "ward_number": 180,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Shantala Nagar",
+    "ward_number": 181,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Shanthi Nagar",
+    "ward_number": 182,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Neelasandra",
+    "ward_number": 183,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Vannarapete",
+    "ward_number": 184,
+    "MP_name": "P. C. Mohan",
+    "MLA_name": "N. A. Haris"
+  },
+  {
+    "ward_name": "Ejipura",
+    "ward_number": 185,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Koramangala",
+    "ward_number": 186,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Adugodi",
+    "ward_number": 187,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Lakkasandra",
+    "ward_number": 188,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Suddagunte Palya",
+    "ward_number": 189,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Madivala",
+    "ward_number": 190,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Jakkasandra",
+    "ward_number": 191,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "BTM Layout",
+    "ward_number": 192,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "N S Palya",
+    "ward_number": 193,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ramalinga Reddy"
+  },
+  {
+    "ward_name": "Gurappanapalya",
+    "ward_number": 194,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "C. K. Ramamurthy"
+  },
+  {
+    "ward_name": "Tilak Nagar",
+    "ward_number": 195,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "C. K. Ramamurthy"
+  },
+  {
+    "ward_name": "Byrasandra",
+    "ward_number": 196,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "C. K. Ramamurthy"
+  },
+  {
+    "ward_name": "Shakambari Nagar",
+    "ward_number": 197,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "C. K. Ramamurthy"
+  },
+  {
+    "ward_name": "J P Nagar",
+    "ward_number": 198,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "C. K. Ramamurthy"
+  },
+  {
+    "ward_name": "Sarakki",
+    "ward_number": 199,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "C. K. Ramamurthy"
+  },
+  {
+    "ward_name": "Yediyur",
+    "ward_number": 200,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Umamaheshwari Ward",
+    "ward_number": 201,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Ganesh Mandir Ward",
+    "ward_number": 202,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Banashankari Temple Ward",
+    "ward_number": 203,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Kumaraswamy Layout",
+    "ward_number": 204,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Vikram Nagar",
+    "ward_number": 205,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Padmanabha Nagar",
+    "ward_number": 206,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Kamakya Nagar",
+    "ward_number": 207,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Deen Dayalu Ward",
+    "ward_number": 208,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Hosakerehalli",
+    "ward_number": 209,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "R. Ashoka"
+  },
+  {
+    "ward_name": "Basavanagudi",
+    "ward_number": 210,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Hanumanth Nagar",
+    "ward_number": 211,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Srinivasa Nagar",
+    "ward_number": 212,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Srinagar",
+    "ward_number": 213,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Girinagar",
+    "ward_number": 214,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Katriguppe",
+    "ward_number": 215,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Vidyapeeta Ward",
+    "ward_number": 216,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Ravi Subramanya L. A."
+  },
+  {
+    "ward_name": "Uttarahalli",
+    "ward_number": 217,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Subramanyapura",
+    "ward_number": 218,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Vasanthpura",
+    "ward_number": 219,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Yelachenahalli",
+    "ward_number": 220,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Konanakunte",
+    "ward_number": 221,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "RBI Layout",
+    "ward_number": 222,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Chunchaghatta",
+    "ward_number": 223,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Anjanapura",
+    "ward_number": 224,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Gottigere",
+    "ward_number": 225,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Kalena Agrahara",
+    "ward_number": 226,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Begur",
+    "ward_number": 227,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Naganathapura",
+    "ward_number": 228,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "M. Krishnappa"
+  },
+  {
+    "ward_name": "Ibluru",
+    "ward_number": 229,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Agara",
+    "ward_number": 230,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Mangammanapalya",
+    "ward_number": 231,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "HSR-Singasandra",
+    "ward_number": 232,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Rupenaagrahara",
+    "ward_number": 233,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Hongasandra",
+    "ward_number": 234,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Bommanahalli",
+    "ward_number": 235,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Devarachikkanahalli",
+    "ward_number": 236,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Bilekhalli",
+    "ward_number": 237,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Arakere",
+    "ward_number": 238,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Hulimavu",
+    "ward_number": 239,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Vinayakanagar",
+    "ward_number": 240,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Puttenahalli- Sarakki Lake",
+    "ward_number": 241,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Jaraganahalli",
+    "ward_number": 242,
+    "MP_name": "Tejasvi Surya",
+    "MLA_name": "Satish Reddy M."
+  },
+  {
+    "ward_name": "Kudlu",
+    "ward_number": 243,
+    "MP_name": "Dr. C. N. Manjunath",
+    "MLA_name": "B. Shivanna"
+  }
+]

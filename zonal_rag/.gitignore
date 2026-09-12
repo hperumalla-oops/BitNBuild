@@ -1,0 +1,10 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+sources/pdfs/*
+sources/kml/*
+!sources/pdfs/.gitkeep
+!sources/kml/.gitkeep
+output/spatial/*.geojson

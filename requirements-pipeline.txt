@@ -1,0 +1,15 @@
+# Local data pipeline only — never deployed.
+#   .venv/Scripts/python -m pip install -r requirements.txt -r requirements-pipeline.txt
+
+# zonal_rag: zoning ingestion + RAG
+pdfplumber>=0.11
+fastkml>=1.0
+lxml>=5.0
+supabase>=2.8
+pydantic>=2.7
+python-dotenv>=1.0
+
+# BitNBuild: news parsers and the nammakasa scraper
+feedparser>=6.0
+beautifulsoup4>=4.12
+selenium>=4.20        # scrape_nammakasa.py only; needs a local Chrome

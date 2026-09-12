@@ -1,0 +1,34 @@
+# local tooling state
+.claude/
+
+# secrets & environment
+.env
+# generated from .env; holds the publishable key
+BitNBuild/web/config.js
+.venv/
+venv/
+
+# MLA/MP photo originals. build_map_data.py reads the slugified copies in
+# BitNBuild/data/mla_photos/, which ARE committed; these are the untouched
+# source drop, kept on disk but not in git.
+BitNBuild/data/MLA_MP/
+BitNBuild/data/MLA_MP.zip
+
+# python
+__pycache__/
+*.pyc
+
+# zonal_rag: downloaded source documents are large and re-fetchable
+zonal_rag/sources/pdfs/*
+zonal_rag/sources/kml/*
+!zonal_rag/sources/pdfs/.gitkeep
+!zonal_rag/sources/kml/.gitkeep
+zonal_rag/output/spatial/*.geojson
+
+# BitNBuild: parser de-dup state and logs are machine-local.
+# output/*.json and output/wards.geojson ARE committed, so the map runs
+# without anyone having to re-run a parser.
+BitNBuild/output/.parser_seen.json
+BitNBuild/output/.parser_road_seen.json
+BitNBuild/output/*.log
+public/

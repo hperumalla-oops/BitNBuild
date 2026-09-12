@@ -1,0 +1,16 @@
+# Runtime dependencies for the web server (server/) ONLY.
+#
+# Vercel installs this file into the serverless function, so it is kept to what
+# server/app.py actually imports. Supabase is reached over plain HTTP, so the
+# supabase SDK is not needed here.
+#
+# For the parsers and the zoning ingestion pipeline, also install
+# requirements-pipeline.txt — those deps (selenium, lxml, pdfplumber) are large
+# and never run in the deployed app.
+fastapi>=0.115
+openai>=1.50
+requests>=2.31
+pydantic>=2.7
+
+# Local development only; Vercel supplies its own ASGI server.
+uvicorn[standard]>=0.30
